@@ -1,0 +1,193 @@
+/* ============================================================
+   OdontoPlus — Design Tokens (variables.css)
+   Extraído del sistema de diseño "Vital Gradient"
+   ============================================================ */
+
+:root {
+    /* ── Colores Primarios ── */
+    --color-primary: #4648d4;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #6063ee;
+    --color-on-primary-container: #fffbff;
+    --color-primary-fixed: #e1e0ff;
+    --color-primary-fixed-dim: #c0c1ff;
+    --color-on-primary-fixed: #07006c;
+    --color-on-primary-fixed-variant: #2f2ebe;
+    --color-inverse-primary: #c0c1ff;
+
+    /* ── Colores Secundarios ── */
+    --color-secondary: #8127cf;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #9c48ea;
+    --color-on-secondary-container: #fffbff;
+    --color-secondary-fixed: #f0dbff;
+    --color-secondary-fixed-dim: #ddb7ff;
+    --color-on-secondary-fixed: #2c0051;
+    --color-on-secondary-fixed-variant: #6900b3;
+
+    /* ── Colores Terciarios (Acentos) ── */
+    --color-tertiary: #006577;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #008096;
+    --color-on-tertiary-container: #f9fdff;
+    --color-tertiary-fixed: #acedff;
+    --color-tertiary-fixed-dim: #4cd7f6;
+    --color-on-tertiary-fixed: #001f26;
+    --color-on-tertiary-fixed-variant: #004e5c;
+
+    /* ── Superficies ── */
+    --color-surface: #f7f9fb;
+    --color-surface-dim: #d8dadc;
+    --color-surface-bright: #f7f9fb;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f2f4f6;
+    --color-surface-container: #eceef0;
+    --color-surface-container-high: #e6e8ea;
+    --color-surface-container-highest: #e0e3e5;
+    --color-on-surface: #191c1e;
+    --color-on-surface-variant: #464554;
+    --color-surface-variant: #e0e3e5;
+    --color-surface-tint: #494bd6;
+    --color-inverse-surface: #2d3133;
+    --color-inverse-on-surface: #eff1f3;
+
+    /* ── Contornos ── */
+    --color-outline: #767586;
+    --color-outline-variant: #c7c4d7;
+
+    /* ── Semánticos: Error ── */
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-on-error-container: #93000a;
+
+    /* ── Semánticos: Éxito ── */
+    --color-success: #1b8c4e;
+    --color-success-container: #d4f5e0;
+    --color-on-success: #ffffff;
+
+    /* ── Semánticos: Aviso ── */
+    --color-warning: #e68a00;
+    --color-warning-container: #fff3d6;
+    --color-on-warning: #ffffff;
+
+    /* ── Fondos y Background ── */
+    --color-background: #f7f9fb;
+    --color-on-background: #191c1e;
+
+    /* ── Gradientes de Marca ── */
+    --gradient-brand: linear-gradient(135deg, #4648d4, #8127cf);
+    --gradient-brand-soft: linear-gradient(135deg, rgba(70, 72, 212, 0.08), rgba(129, 39, 207, 0.08));
+    --gradient-accent: linear-gradient(135deg, #006577, #4cd7f6);
+
+    /* ── Tipografía ── */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Display */
+    --font-display-lg: 700 48px/56px var(--font-family);
+    --font-display-lg-letter: -0.02em;
+
+    /* Headlines */
+    --font-headline-lg: 600 32px/40px var(--font-family);
+    --font-headline-lg-letter: -0.01em;
+    --font-headline-lg-mobile: 600 28px/36px var(--font-family);
+    --font-headline-md: 600 24px/32px var(--font-family);
+    --font-headline-sm: 600 20px/28px var(--font-family);
+
+    /* Body */
+    --font-body-lg: 400 18px/28px var(--font-family);
+    --font-body-md: 400 16px/24px var(--font-family);
+    --font-body-sm: 400 14px/20px var(--font-family);
+
+    /* Labels */
+    --font-label-md: 600 12px/16px var(--font-family);
+    --font-label-md-letter: 0.05em;
+
+    /* ── Espaciado (basado en 4px) ── */
+    --space-unit: 4px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 40px;
+    --space-3xl: 48px;
+    --space-gutter: 24px;
+    --space-container-margin: 40px;
+
+    /* ── Bordes ── */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-default: 0.5rem; /* 8px */
+    --radius-md: 0.75rem;   /* 12px */
+    --radius-lg: 1rem;      /* 16px */
+    --radius-xl: 1.5rem;    /* 24px */
+    --radius-full: 9999px;
+
+    /* ── Sombras ── */
+    --shadow-sm: 0 2px 8px -2px rgba(70, 72, 212, 0.06);
+    --shadow-md: 0 8px 24px -4px rgba(70, 72, 212, 0.08);
+    --shadow-lg: 0 16px 40px -8px rgba(70, 72, 212, 0.10);
+    --shadow-xl: 0 24px 48px -12px rgba(70, 72, 212, 0.12);
+    --shadow-glow-primary: 0 0 20px rgba(70, 72, 212, 0.25);
+
+    /* ── Transiciones ── */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 400ms ease;
+
+    /* ── Layout ── */
+    --sidebar-width: 260px;
+    --topbar-height: 64px;
+
+    /* ── Z-Index ── */
+    --z-base: 1;
+    --z-sidebar: 40;
+    --z-topbar: 30;
+    --z-modal-backdrop: 50;
+    --z-modal: 60;
+    --z-toast: 70;
+
+    /* ── Glassmorphism (Light) ── */
+    --glass-surface: rgba(255, 255, 255, 0.80);
+    --glass-surface-opaque: rgba(255, 255, 255, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-input: rgba(255, 255, 255, 0.5);
+    --gradient-main-bg: linear-gradient(135deg, var(--color-surface-bright), #e8eaff);
+}
+
+/* ============================================================
+   OdontoPlus — Dark Theme Overrides
+   ============================================================ */
+[data-theme="dark"] {
+    /* ── Superficies (Dark) ── */
+    --color-surface: #1e1e1e;
+    --color-surface-dim: #121212;
+    --color-surface-bright: #2d2d2d;
+    --color-surface-container-lowest: #0d0d0d;
+    --color-surface-container-low: #141414;
+    --color-surface-container: #1a1a1a;
+    --color-surface-container-high: #242424;
+    --color-surface-container-highest: #333333;
+    
+    /* ── Texto (Dark) ── */
+    --color-on-surface: #ffffff;
+    --color-on-surface-variant: #b3b3b3;
+    --color-surface-variant: #333333;
+    --color-inverse-surface: #e0e3e5;
+    --color-inverse-on-surface: #191c1e;
+
+    /* ── Contornos (Dark) ── */
+    --color-outline: #5c5c5c;
+    --color-outline-variant: #3d3d3d;
+
+    /* ── Fondos (Dark) ── */
+    --color-background: #121212;
+    --color-on-background: #ffffff;
+    
+    /* ── Glassmorphism (Dark) ── */
+    --glass-surface: rgba(30, 30, 30, 0.70);
+    --glass-surface-opaque: rgba(30, 30, 30, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-input: rgba(0, 0, 0, 0.3);
+    --gradient-main-bg: linear-gradient(135deg, var(--color-surface-bright), #1a1a2e);
+}

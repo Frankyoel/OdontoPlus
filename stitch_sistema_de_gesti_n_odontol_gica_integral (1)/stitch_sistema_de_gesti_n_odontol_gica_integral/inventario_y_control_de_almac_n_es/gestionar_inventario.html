@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventario y Almacén - DentalPro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-container": "#f9fdff",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-bright": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed": "#f0dbff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "secondary": "#8127cf",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "inverse-on-surface": "#eff1f3",
+                        "primary": "#4648d4",
+                        "secondary-container": "#9c48ea",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed": "#2c0051",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-dim": "#d8dadc",
+                        "outline": "#767586",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#494bd6",
+                        "inverse-surface": "#2d3133",
+                        "outline-variant": "#c7c4d7",
+                        "tertiary": "#006577",
+                        "tertiary-container": "#008096",
+                        "on-primary-fixed": "#07006c",
+                        "inverse-primary": "#c0c1ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#e1e0ff",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#464554",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-container": "#6063ee",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "tertiary-fixed": "#acedff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "container-margin": "40px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(70, 72, 212, 0.05);
+        }
+        .bg-gradient-brand {
+            background: linear-gradient(135deg, #4648d4 0%, #9c48ea 100%);
+        }
+        .bg-gradient-brand-soft {
+            background: linear-gradient(135deg, rgba(70, 72, 212, 0.1) 0%, rgba(156, 72, 234, 0.1) 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #4648d4 0%, #9c48ea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom Scrollbar for clean look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c7c4d7; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #767586; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-hidden flex h-screen">
+<!-- SideNavBar (from JSON, semantic shell) -->
+<aside class="hidden md:flex w-64 h-screen docked left-0 bg-surface-container-lowest border-r border-outline-variant shadow-sm flex-col py-lg px-md gap-sm shrink-0 z-20">
+<!-- Brand / Header -->
+<div class="flex items-center gap-md px-sm py-sm mb-xl">
+<div class="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">dentistry</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">DentalPro</h1>
+<p class="text-label-md font-label-md text-on-surface-variant">Admin v1.0</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-xs flex-grow">
+<!-- Inicio -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">Inicio</span>
+</a>
+<!-- Pacientes -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-md font-label-md">Pacientes</span>
+</a>
+<!-- Agenda -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-label-md font-label-md">Agenda</span>
+</a>
+<!-- Inventario (ACTIVE) -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-primary bg-primary-fixed font-bold scale-95 transition-transform shadow-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-label-md font-label-md">Inventario</span>
+</a>
+<!-- Reportes -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-label-md font-label-md">Reportes</span>
+</a>
+<!-- Configuración -->
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md font-label-md">Configuración</span>
+</a>
+</nav>
+<!-- CTA & Footer -->
+<div class="mt-auto flex flex-col gap-md">
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-error hover:bg-error-container transition-colors duration-200 mt-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-label-md font-label-md">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Abstract Background Gradient Decoration -->
+<div class="absolute top-0 left-0 w-full h-64 bg-gradient-brand opacity-[0.03] pointer-events-none rounded-br-full z-0"></div>
+<div class="absolute -top-32 -right-32 w-96 h-96 bg-secondary opacity-[0.04] rounded-full blur-3xl pointer-events-none z-0"></div>
+<!-- TopNavBar (from JSON) -->
+<header class="w-full docked top-0 h-20 bg-transparent no-border flat no shadows flex items-center justify-between px-container-margin w-full max-w-full z-20 relative">
+<div class="flex items-center gap-md w-1/3">
+<!-- Search Bar (on_left) -->
+<div class="relative w-full max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-full border-none bg-surface-container-high/50 focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all text-body-sm font-body-sm text-on-surface placeholder:text-outline-variant glass-card" placeholder="Buscar en inventario..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md justify-end w-1/3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest/50 backdrop-blur-md transition-all scale-105-on-hover relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest/50 backdrop-blur-md transition-all scale-105-on-hover">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-highest cursor-pointer ml-sm">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a smiling medical administrator in a bright, modern clinic setting, conveying a sense of friendly efficiency and high-end healthcare management, vibrant light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4AvxoyprkpMDV-uRQXDAtYwcydluKa1JNeNq8NdABJt2NlA90JZuV3EXxVOzjx4oEoz5XQIU6y0FOvxJ40eLRdGB8KDsBrWVPhFHqGNR1I_C_RrjciuUt_OnBNafoqKfKBdrU4f6wsPyf1uB9LWIhAa577PtXE6UWxhGdWIRuTeT6a3zNOfvMq41hXhaQmIDCF9R10aIibokiNEfSSVdP2q6HxVEIfTDyIzD3Xf-EO4r_myxFRGRALU_tFj1dVg-ATXgaDvTjZuqK"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto px-container-margin pb-container-margin z-10 relative">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md mt-sm">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-background mb-xs">Gestión de Inventario</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Monitoreo de suministros y almacén para Administradores.</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-2 rounded-xl border border-outline-variant text-primary font-label-md flex items-center gap-xs hover:bg-surface-container-low transition-all glass-card">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Exportar
+                    </button>
+<button class="px-md py-2 rounded-xl bg-gradient-brand text-white font-label-md flex items-center gap-xs hover:shadow-lg transition-all hover:-translate-y-0.5">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Nuevo Artículo
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- KPI Widgets (Top Row) -->
+<div class="col-span-1 md:col-span-3 glass-card rounded-2xl p-lg flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+</div>
+<span class="text-label-md text-outline">Total Artículos</span>
+</div>
+<div>
+<h3 class="text-headline-lg font-headline-lg text-on-surface">1,248</h3>
+<p class="text-body-sm font-body-sm text-primary flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +12% este mes
+                        </p>
+</div>
+</div>
+<div class="col-span-1 md:col-span-3 glass-card rounded-2xl p-lg flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<div class="w-10 h-10 rounded-xl bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<span class="text-label-md text-outline">Stock Crítico</span>
+</div>
+<div>
+<h3 class="text-headline-lg font-headline-lg text-on-surface">14</h3>
+<p class="text-body-sm font-body-sm text-error flex items-center gap-xs mt-xs">
+<span class="material-symbols-outlined text-[16px]">error</span> Requiere acción
+                        </p>
+</div>
+</div>
+<div class="col-span-1 md:col-span-6 glass-card rounded-2xl p-lg relative overflow-hidden bg-gradient-brand text-white">
+<div class="absolute right-0 top-0 w-48 h-full bg-white opacity-10 skew-x-12 translate-x-8"></div>
+<div class="relative z-10 flex justify-between items-center h-full">
+<div>
+<span class="text-label-md font-label-md text-primary-fixed-dim uppercase tracking-wider mb-xs block">Valor Total Almacén</span>
+<h3 class="text-display-lg font-display-lg">$45,290.00</h3>
+</div>
+<div class="w-16 h-16 rounded-full border-4 border-white/20 flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-[32px]">payments</span>
+</div>
+</div>
+</div>
+<!-- Main Inventory Table -->
+<div class="col-span-1 md:col-span-8 glass-card rounded-2xl flex flex-col h-[500px]">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Estado de Inventario</h3>
+<div class="flex gap-sm">
+<button class="px-sm py-1 rounded-md text-label-md font-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-colors">Todos</button>
+<button class="px-sm py-1 rounded-md text-label-md font-label-md bg-transparent text-error hover:bg-error-container transition-colors">Crítico</button>
+</div>
+</div>
+<div class="overflow-auto flex-1 p-md">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr>
+<th class="p-sm text-label-md font-label-md text-outline-variant border-b border-surface-variant">Artículo</th>
+<th class="p-sm text-label-md font-label-md text-outline-variant border-b border-surface-variant">Categoría</th>
+<th class="p-sm text-label-md font-label-md text-outline-variant border-b border-surface-variant">Stock Actual</th>
+<th class="p-sm text-label-md font-label-md text-outline-variant border-b border-surface-variant">Estado</th>
+<th class="p-sm text-label-md font-label-md text-outline-variant border-b border-surface-variant">Acción</th>
+</tr>
+</thead>
+<tbody>
+<!-- Critical Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-sm border-b border-surface-container-highest">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">vaccines</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Anestesia Local (Cajas)</p>
+<p class="text-[10px] text-outline">SKU: ANE-001</p>
+</div>
+</div>
+</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm text-on-surface-variant">Insumos Clínicos</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm font-semibold text-on-surface">5 <span class="text-outline text-[12px] font-normal">/ mín 20</span></td>
+<td class="p-sm border-b border-surface-container-highest">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-error-container text-error inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Crítico
+                                        </span>
+</td>
+<td class="p-sm border-b border-surface-container-highest">
+<button class="text-primary text-label-md font-label-md hover:underline opacity-0 group-hover:opacity-100 transition-opacity">Pedir</button>
+</td>
+</tr>
+<!-- Low Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-sm border-b border-surface-container-highest">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">masks</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Mascarillas N95</p>
+<p class="text-[10px] text-outline">SKU: MAS-042</p>
+</div>
+</div>
+</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm text-on-surface-variant">Protección Personal</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm font-semibold text-on-surface">120 <span class="text-outline text-[12px] font-normal">/ mín 150</span></td>
+<td class="p-sm border-b border-surface-container-highest">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary-fixed text-on-secondary-fixed inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Bajo
+                                        </span>
+</td>
+<td class="p-sm border-b border-surface-container-highest">
+<button class="text-primary text-label-md font-label-md hover:underline opacity-0 group-hover:opacity-100 transition-opacity">Pedir</button>
+</td>
+</tr>
+<!-- Adequate Item -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="p-sm border-b border-surface-container-highest">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">cleaning_services</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Desinfectante Superficies</p>
+<p class="text-[10px] text-outline">SKU: DES-991</p>
+</div>
+</div>
+</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm text-on-surface-variant">Limpieza</td>
+<td class="p-sm border-b border-surface-container-highest text-body-sm font-body-sm font-semibold text-on-surface">45 <span class="text-outline text-[12px] font-normal">/ mín 10</span></td>
+<td class="p-sm border-b border-surface-container-highest">
+<span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-variant text-on-surface-variant inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span> Adecuado
+                                        </span>
+</td>
+<td class="p-sm border-b border-surface-container-highest">
+<button class="text-outline-variant text-label-md font-label-md opacity-0 group-hover:opacity-100 transition-opacity"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Proveedores Sidebar -->
+<div class="col-span-1 md:col-span-4 flex flex-col gap-gutter">
+<!-- Proveedores Card -->
+<div class="glass-card rounded-2xl flex-1 flex flex-col h-[500px]">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Proveedores Principales</h3>
+<button class="text-primary hover:text-primary-container transition-colors"><span class="material-symbols-outlined">add_circle</span></button>
+</div>
+<div class="p-md flex-1 overflow-auto flex flex-col gap-sm">
+<!-- Supplier Item -->
+<div class="p-sm rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-between border border-transparent hover:border-surface-variant cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed-dim text-on-primary-fixed flex items-center justify-center font-bold text-body-md">M</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">MedDenta S.A.</p>
+<p class="text-label-md font-label-md text-outline-variant">Insumos Clínicos</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">chevron_right</span>
+</div>
+<!-- Supplier Item -->
+<div class="p-sm rounded-xl hover:bg-surface-container-low transition-colors flex items-center justify-between border border-transparent hover:border-surface-variant cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed-dim text-on-secondary-fixed flex items-center justify-center font-bold text-body-md">E</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">EquiposDent</p>
+<p class="text-label-md font-label-md text-outline-variant">Maquinaria</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">chevron_right</span>
+</div>
+</div>
+<!-- Quick Action within Supplier -->
+<div class="p-md border-t border-surface-variant bg-surface-container-lowest/50 rounded-b-2xl">
+<button class="w-full py-2 border border-outline-variant text-primary rounded-lg text-label-md font-label-md hover:bg-surface-container-low transition-all">Ver Directorio Completo</button>
+</div>
+</div>
+</div>
+</div> <!-- End Grid -->
+</div> <!-- End Canvas -->
+</main>
+</body></html>

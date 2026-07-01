@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dental Management - Gestión de Roles</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-container": "#f9fdff",
+                        "on-tertiary-fixed": "#001f26",
+                        "surface-bright": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#fffbff",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed": "#f0dbff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "secondary": "#8127cf",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "inverse-on-surface": "#eff1f3",
+                        "primary": "#4648d4",
+                        "secondary-container": "#9c48ea",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed": "#2c0051",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "surface-dim": "#d8dadc",
+                        "outline": "#767586",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#494bd6",
+                        "inverse-surface": "#2d3133",
+                        "outline-variant": "#c7c4d7",
+                        "tertiary": "#006577",
+                        "tertiary-container": "#008096",
+                        "on-primary-fixed": "#07006c",
+                        "inverse-primary": "#c0c1ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#e1e0ff",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#464554",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-container": "#6063ee",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "tertiary-fixed": "#acedff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "container-margin": "40px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fb;
+            background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 0.1) 0px, transparent 50%),
+                              radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(70, 72, 212, 0.08);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #4648d4 0%, #8127cf 100%);
+        }
+        .primary-gradient-hover:hover {
+            background: linear-gradient(135deg, #6063ee 0%, #9c48ea 100%);
+        }
+        
+        .header-bg {
+            background: linear-gradient(to right, #4648d4, #c0c1ff);
+            background-size: cover;
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-bg::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+            background-size: 200% 200%;
+            animation: shimmer 5s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="text-on-surface font-body-md overflow-x-hidden antialiased">
+<div class="flex h-screen overflow-hidden bg-surface-container-lowest/50">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col bg-surface-container-lowest dark:bg-inverse-surface border-r border-outline-variant dark:border-outline shadow-sm w-64 h-screen py-lg px-md gap-sm flex-shrink-0 z-20">
+<!-- Brand -->
+<div class="flex items-center gap-3 mb-8 px-4">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined font-bold text-[24px]">dentistry</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary">DentalPro</h1>
+<p class="text-label-md font-label-md text-on-surface-variant">Admin v1.0</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-label-md font-label-md">Inicio</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">person</span>
+<span class="text-label-md font-label-md">Pacientes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+<span class="text-label-md font-label-md">Agenda</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span class="text-label-md font-label-md">Inventario</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="text-label-md font-label-md">Reportes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary bg-primary-fixed font-bold scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined text-[20px] shadow-sm">settings</span>
+<span class="text-label-md font-label-md">Configuración</span>
+</a>
+</nav>
+<!-- CTA & Footer -->
+<div class="mt-auto flex flex-col gap-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors duration-200 mt-2" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-label-md font-label-md">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- TopNavBar (Mobile mainly, but visible on desktop too as per standard dash layouts) -->
+<header class="flex items-center justify-between px-container-margin w-full h-20 bg-transparent flex-shrink-0 z-10">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<!-- Search -->
+<div class="hidden sm:flex items-center bg-surface-container-highest/30 backdrop-blur-sm rounded-full px-4 py-2 border border-outline-variant/30 w-64 focus-within:w-80 transition-all duration-300 focus-within:border-primary/50 focus-within:bg-surface-container-highest/50">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px] mr-2">search</span>
+<input class="bg-transparent border-none outline-none text-body-sm font-body-sm w-full placeholder:text-on-surface-variant/70 text-on-surface" placeholder="Buscar en Configuración..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest/50 backdrop-blur-md rounded-full transition-all hover:scale-105 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest/50 backdrop-blur-md rounded-full transition-all hover:scale-105">
+<span class="material-symbols-outlined">chat_bubble</span>
+</button>
+<button class="ml-2 flex items-center gap-2 hover:bg-surface-container-highest/50 p-1 pr-3 rounded-full transition-all border border-transparent hover:border-outline-variant/30">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A professional headshot of a smiling system administrator in a brightly lit modern office setting, light mode aesthetic, crisp details, soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAORwn-ZvVrBIfQa2LOoxztQHNR4_YcxnqWwq7sAjz24v21K2tVm9lo6kDlmhcNYEf5hYmsaZIllrd65ggnB_IcPuEm8Kombs5HokheGvDBuDO0iaz2mkV6QES8Zerr7qDxQsbvIkX_QMhhXGZ_kkYRlY-4i_UKWrT_VjPeRZdfJeazW6R58zHUQC9oKOrVrKZa7LLsC3LPuRbI57EwoB4P3PyDwvzGlq_8b5txx5QorUkWPmJQ1IH6-_wm0JEg4BvGoDFFhVAxUolc"/>
+<div class="hidden md:block text-left">
+<p class="text-label-md font-label-md text-on-surface">Admin</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-1 overflow-y-auto px-4 md:px-container-margin pb-container-margin">
+<!-- Page Header / Banner -->
+<div class="header-bg mb-gutter shadow-lg">
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="text-headline-lg font-headline-lg font-bold mb-1">Gestión de Roles y Permisos</h2>
+<p class="text-body-md font-body-md text-white/80">Administra los accesos del personal de la clínica dental.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-white text-primary rounded-xl font-label-md text-label-md font-bold shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Nuevo Rol
+                        </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout for Roles Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Role Details & Permissions (Takes up 8 columns on large screens) -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<!-- Role Selector Chips -->
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-5 py-2.5 rounded-full border border-transparent bg-primary text-white text-label-md font-label-md shadow-md whitespace-nowrap">
+                            Administrador del Sistema
+                        </button>
+<button class="px-5 py-2.5 rounded-full border border-outline-variant bg-surface text-on-surface-variant text-label-md font-label-md hover:bg-surface-container-high transition-colors whitespace-nowrap">
+                            Gerente
+                        </button>
+<button class="px-5 py-2.5 rounded-full border border-outline-variant bg-surface text-on-surface-variant text-label-md font-label-md hover:bg-surface-container-high transition-colors whitespace-nowrap">
+                            Dentista
+                        </button>
+<button class="px-5 py-2.5 rounded-full border border-outline-variant bg-surface text-on-surface-variant text-label-md font-label-md hover:bg-surface-container-high transition-colors whitespace-nowrap">
+                            Recepcionista
+                        </button>
+</div>
+<!-- Active Role Details Card -->
+<div class="glass-card rounded-2xl p-lg flex flex-col gap-6">
+<div class="flex items-start justify-between border-b border-outline-variant/30 pb-4">
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+                                    Administrador del Sistema
+                                </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant max-w-2xl">
+                                    Acceso total a todos los módulos del sistema, incluyendo configuración técnica, facturación avanzada y gestión de usuarios.
+                                </p>
+</div>
+<button class="text-primary hover:bg-primary-container/20 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+<!-- Permissions Grid -->
+<div>
+<h4 class="text-label-md font-label-md text-on-surface mb-4 uppercase tracking-wider text-on-surface-variant/80">Permisos por Módulo</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Permission Item -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/50 hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/20 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">person</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Gestión de Pacientes</p>
+<p class="text-[11px] text-on-surface-variant">Crear, editar, eliminar historial</p>
+</div>
+</div>
+<!-- Toggle (Checked state) -->
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer shadow-inner">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Permission Item -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/50 hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-tertiary-container/20 text-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Facturación y Pagos</p>
+<p class="text-[11px] text-on-surface-variant">Procesar pagos, emitir facturas</p>
+</div>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer shadow-inner">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Permission Item -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/50 hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Gestión de Usuarios</p>
+<p class="text-[11px] text-on-surface-variant">Añadir/remover staff</p>
+</div>
+</div>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer shadow-inner">
+<div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<!-- Permission Item -->
+<div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/50 hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-error-container/20 text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">delete_forever</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Borrado de Sistema</p>
+<p class="text-[11px] text-on-surface-variant">Acciones destructivas</p>
+</div>
+</div>
+<!-- Toggle (Unchecked state) -->
+<div class="w-10 h-6 bg-surface-variant rounded-full relative cursor-pointer">
+<div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Staff Assignment (Takes up 4 columns on large screens) -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="glass-card rounded-2xl p-6 h-full flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-headline-sm font-headline-sm font-semibold text-on-surface">Personal Asignado</h3>
+<button class="text-primary text-label-md font-label-md hover:underline">Ver Todos</button>
+</div>
+<!-- Search Staff -->
+<div class="flex items-center bg-surface-container-lowest rounded-xl px-3 py-2 border border-outline-variant/50 mb-4">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-2">search</span>
+<input class="bg-transparent border-none outline-none text-body-sm font-body-sm w-full" placeholder="Buscar empleado..." type="text"/>
+</div>
+<!-- Staff List -->
+<div class="flex flex-col gap-3 overflow-y-auto">
+<!-- Staff Member -->
+<div class="flex items-center justify-between p-2 rounded-xl hover:bg-surface-container-lowest/80 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="Close up portrait of a female dentist smiling warmly in a modern clinical setting, soft natural lighting, high resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2wEWcrNlq_wPsAGyyi3HvquzMx95vFf-hdNgRfMhmxgjFLuaVIYnyiEHN6oAi5fCYnO-AkUfTHFR_OtOQJ1UWbgsE_jtYtAQNMaFeS1P1YB4dZIcjb14qcc5dNxHzEysuvOLcv22LmxHCSK2f_gjJ6MJ2uLA-ZXueIXuV7Ic7pKNiGeTMrSRMiRgkfT5qr7aFCGK8eQ5e07PA7yrv9QJ8WzgYfu9ZCj_dporKMzJDP8mDrXagkpSOgrd5rd9Ld3rgtSuy-TrCd_wi"/>
+<div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Dra. Elena Ramos</p>
+<p class="text-[11px] text-on-surface-variant">Administrador del Sistema</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">more_vert</span>
+</div>
+<!-- Staff Member -->
+<div class="flex items-center justify-between p-2 rounded-xl hover:bg-surface-container-lowest/80 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="Portrait of a young male IT specialist wearing glasses, standing in a brightly lit modern office, blurred background, professional attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnRbdty0GylOq9TQfX9kpFIWjB2qQxteccA2XQB6j2mbNe7DOyWr9EKhW_BklHi8BYWcclKf7fyfo7HmYPriyEIFw4A9hT8_eIoNbYy6llf7FKLt-mqnETVz6pzpzWJcPawZh7iG-7chCpnQBcGTNoHmtyRvEgyPeZznSnRPKrm4hUIpBxdFnckVTmFK1AXGcbjEhY1mnENDXVIGWgAaTcdUiN_SVa9eWGPtd2R85DOyz14UrEoIEg1l3hQS7zzuYEgJzcbWwgntxW"/>
+<div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">Carlos Mendoza</p>
+<p class="text-[11px] text-on-surface-variant">Administrador del Sistema</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">more_vert</span>
+</div>
+<!-- Staff Member (Offline) -->
+<div class="flex items-center justify-between p-2 rounded-xl hover:bg-surface-container-lowest/80 transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center font-bold font-body-lg border-2 border-white shadow-sm">
+                                            LM
+                                        </div>
+<div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-outline-variant border-2 border-white rounded-full"></div>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface opacity-80">Laura Medina</p>
+<p class="text-[11px] text-on-surface-variant opacity-80">Recepcionista (Delegado)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">more_vert</span>
+</div>
+</div>
+<button class="mt-auto w-full py-2.5 border border-primary/30 text-primary rounded-xl text-label-md font-label-md hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                            Asignar Personal
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

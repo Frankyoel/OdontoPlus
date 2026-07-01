@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agenda Clínica - DentalCare Pro</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Style Guidance -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#6063ee",
+                    "tertiary-fixed-dim": "#4cd7f6",
+                    "primary-fixed": "#e1e0ff",
+                    "outline-variant": "#c7c4d7",
+                    "background": "#f7f9fb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed": "#001f26",
+                    "on-tertiary-container": "#f9fdff",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-primary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-primary-container": "#fffbff",
+                    "tertiary-container": "#008096",
+                    "inverse-primary": "#c0c1ff",
+                    "surface": "#f7f9fb",
+                    "on-error": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#006577",
+                    "secondary-container": "#9c48ea",
+                    "on-secondary-fixed": "#2c0051",
+                    "secondary-fixed": "#f0dbff",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-tint": "#494bd6",
+                    "on-tertiary-fixed-variant": "#004e5c",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-low": "#f2f4f6",
+                    "tertiary-fixed": "#acedff",
+                    "surface-container": "#eceef0",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "outline": "#767586",
+                    "primary": "#4648d4",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#464554",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "surface-dim": "#d8dadc",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-fixed": "#07006c",
+                    "secondary": "#8127cf"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "sm": "8px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "container-margin": "40px",
+                    "xl": "32px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom scrollbar for agenda view */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e0e3e5; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c7c4d7;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px -10px rgba(70, 72, 212, 0.08);
+        }
+        
+        .glass-panel {
+            background-color: rgba(247, 249, 251, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex font-body-md relative">
+<!-- Atmospheric Background Element -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+<div class="absolute -top-[20%] -left-[10%] w-[50vw] h-[50vw] rounded-full bg-primary-fixed/30 blur-[100px]"></div>
+<div class="absolute top-[40%] -right-[10%] w-[40vw] h-[40vw] rounded-full bg-secondary-fixed/30 blur-[100px]"></div>
+</div>
+<!-- SideNavBar (Shared Component) -->
+<nav class="fixed left-0 top-0 h-full flex flex-col p-md z-40 bg-surface-container-low/90 dark:bg-inverse-surface/95 backdrop-blur-lg h-screen w-64 rounded-r-xl shadow-xl shadow-primary/5 border-r border-white/40">
+<!-- Header -->
+<div class="flex items-center gap-sm mb-xl px-sm pt-sm">
+<div class="w-10 h-10 rounded-xl overflow-hidden shadow-sm bg-gradient-to-br from-primary to-secondary p-[1px]">
+<img alt="Clinic Logo" class="w-full h-full object-cover rounded-xl bg-surface-container-lowest" data-alt="A stylized, modern geometric logo for a high-end dental clinic, featuring soft curves resembling a tooth intersecting with a digital plus sign. Rendered in crisp white against a clean, light background. High-key lighting, minimalist corporate identity style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPHCAwAp9xXvWVr3OqZ3pylyfNr0SHICAc3S5rOv862DYu-BTlCKmOUx5ObcCDIyHq-1yfZ0oCkoPn5ZLmgerodEeg9C24MfMZeJb67CegLo3F0_E35ayi0pvqAY_ttbbhsnlw-brDmv2jmH6gnRSxuLjdo4NW3Og6A2sqKXTr98g20UAN3ijQmJusA0dBd_76Z9buAMLVyHV14A_t5CRBY2_d-HSOvQBG1gZtnRxGAgtq0AGMqV3aOslllIH680X9b1GWSdFQ_Ha6"/>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-extrabold text-primary leading-tight">Clínica DentalCare</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Gestión Clínica</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex-1 space-y-xs">
+<!-- Inactive: Dashboard -->
+<li>
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary px-md py-sm transition-all hover:bg-primary-container/10 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                    Panel
+                </a>
+</li>
+<!-- Active: Appointments -->
+<li>
+<a class="flex items-center gap-md bg-gradient-to-r from-primary to-secondary text-on-primary rounded-xl px-md py-sm shadow-md shadow-primary/20 hover:scale-[1.02] duration-200 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                    Citas
+                </a>
+</li>
+<!-- Inactive: Patients -->
+<li>
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary px-md py-sm transition-all hover:bg-primary-container/10 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+                    Pacientes
+                </a>
+</li>
+<!-- Inactive: Inventory -->
+<li>
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary px-md py-sm transition-all hover:bg-primary-container/10 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+                    Inventario
+                </a>
+</li>
+<!-- Inactive: Staff -->
+<li>
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary px-md py-sm transition-all hover:bg-primary-container/10 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+                    Personal
+                </a>
+</li>
+<!-- Inactive: Reports -->
+<li>
+<a class="flex items-center gap-md text-on-surface-variant hover:text-primary px-md py-sm transition-all hover:bg-primary-container/10 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+                    Reportes
+                </a>
+</li>
+</ul>
+<!-- Action / CTA -->
+<div class="mt-auto mb-md">
+<button class="w-full flex justify-center items-center gap-sm bg-gradient-to-r from-primary to-secondary text-on-primary rounded-xl px-md py-md shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                Nueva Cita
+            </button>
+</div>
+<!-- Footer -->
+<div class="pt-sm border-t border-surface-variant">
+<a class="flex items-center gap-md text-on-surface-variant hover:text-error px-md py-sm transition-all hover:bg-error-container/20 rounded-xl font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">logout</span>
+                Cerrar Sesión
+            </a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col ml-64 z-10">
+<!-- TopNavBar (Shared Component) -->
+<header class="sticky top-0 w-full flex justify-between items-center h-16 px-gutter w-full bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-xl border-b border-white/20 dark:border-white/10 shadow-sm z-30">
+<!-- Brand / Context (Left) -->
+<div class="flex items-center gap-md">
+<h2 class="font-headline-md text-headline-md font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                    DentalCare Pro
+                </h2>
+<div class="h-6 w-px bg-outline-variant mx-sm"></div>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-highest/50 border-none rounded-full font-body-sm text-body-sm text-on-surface focus:ring-2 focus:ring-primary/50 transition-all w-64 placeholder:text-outline" placeholder="Buscar pacientes, doctores..." type="text"/>
+</div>
+</div>
+<!-- Actions (Right) -->
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-primary-container/20 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<!-- Notification Badge -->
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-primary-container/20 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-primary-container/20 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+</button>
+<div class="ml-sm pl-sm border-l border-outline-variant">
+<div class="w-9 h-9 rounded-full overflow-hidden border-2 border-surface-container-lowest shadow-sm cursor-pointer hover:border-primary transition-colors">
+<img alt="Perfil de usuario" class="w-full h-full object-cover" data-alt="A professional headshot of a friendly female receptionist in a modern medical office setting. She is wearing a neat, light blue scrubs top. Soft, natural daylight illuminates her face, creating an approachable and trustworthy mood. Clean, high-resolution portrait photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMGlk_PC804j7ztuH0B6FeRNcCKbeSkwvXr4kd9Vl2GKXcJhZ9Hu-r2i_JW40lhL0pCp-Dsn0ROt65FRdXEVxR_0IHHjtgKMSsnOJI6VcPkoR8yopnyGbY9jlJ9rsHnb9EIz3v7S2o6hWe-aSSMTo-sHsRhfoaZHviNtqrVC1VoSpICVwt4nUwKCKZ09agF14Y5gOyfawBEeaiqzWm5lGCMIY36RzjShiPdMQt_iHxATp_ISmrVX5dLHYCorl4BIWuTWVZcTpU2Zfs"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Canvas (Main Screen Content) -->
+<main class="flex-1 p-lg overflow-y-auto flex flex-col gap-lg container-queries">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-xs">Agenda Clínica</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">event</span>
+                        Semana del 23 al 27 de Octubre, 2023
+                    </p>
+</div>
+<!-- View Controls & Quick Action -->
+<div class="flex items-center gap-md">
+<div class="glass-card rounded-lg flex p-1 shadow-sm">
+<button class="px-md py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Día</button>
+<button class="px-md py-1.5 rounded-md bg-white shadow-sm font-label-md text-label-md text-primary font-bold">Semana</button>
+<button class="px-md py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Mes</button>
+</div>
+<button class="flex items-center gap-xs bg-primary text-on-primary font-label-md text-label-md px-lg py-2 rounded-xl shadow-md shadow-primary/20 hover:bg-surface-tint transition-all active:scale-95">
+<span class="material-symbols-outlined text-[18px]">flash_on</span>
+                        Cita Rápida
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-lg flex-1 min-h-0">
+<!-- Center/Left: Main Calendar (Col 1-8/9 depending on screen) -->
+<div class="col-span-12 @4xl:col-span-9 glass-card rounded-2xl flex flex-col overflow-hidden relative">
+<!-- Calendar Header (Days) -->
+<div class="grid grid-cols-[80px_1fr_1fr_1fr_1fr_1fr] border-b border-surface-variant bg-surface-container-lowest/50">
+<div class="p-sm text-center border-r border-surface-variant/50 flex flex-col justify-end">
+<span class="font-label-md text-label-md text-outline">GMT-4</span>
+</div>
+<!-- Day Columns -->
+<div class="p-md text-center border-r border-surface-variant/50">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Lun</p>
+<p class="font-headline-md text-headline-md text-on-background">23</p>
+</div>
+<div class="p-md text-center border-r border-surface-variant/50 relative">
+<!-- Current Day Indicator -->
+<div class="absolute inset-x-2 bottom-0 h-1 bg-primary rounded-t-full"></div>
+<p class="font-label-md text-label-md text-primary uppercase tracking-wider">Mar</p>
+<p class="font-headline-md text-headline-md text-primary">24</p>
+</div>
+<div class="p-md text-center border-r border-surface-variant/50">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Mié</p>
+<p class="font-headline-md text-headline-md text-on-background">25</p>
+</div>
+<div class="p-md text-center border-r border-surface-variant/50">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Jue</p>
+<p class="font-headline-md text-headline-md text-on-background">26</p>
+</div>
+<div class="p-md text-center">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Vie</p>
+<p class="font-headline-md text-headline-md text-on-background">27</p>
+</div>
+</div>
+<!-- Calendar Body (Scrollable Time Grid) -->
+<div class="flex-1 overflow-y-auto relative bg-surface-container-lowest/30">
+<!-- Background Grid Lines -->
+<div class="absolute inset-0 grid grid-cols-[80px_1fr_1fr_1fr_1fr_1fr] pointer-events-none">
+<div class="border-r border-surface-variant/50"></div>
+<div class="border-r border-surface-variant/50"></div>
+<div class="border-r border-surface-variant/50 bg-primary/5"></div> <!-- Today highlight -->
+<div class="border-r border-surface-variant/50"></div>
+<div class="border-r border-surface-variant/50"></div>
+<div></div>
+</div>
+<!-- Time Rows -->
+<div class="relative">
+<!-- 09:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">09:00 AM</div>
+<div class="relative"></div>
+</div>
+<!-- 10:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">10:00 AM</div>
+<div class="relative"></div>
+</div>
+<!-- 11:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">11:00 AM</div>
+<div class="relative"></div>
+</div>
+<!-- 12:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">12:00 PM</div>
+<div class="relative"></div>
+</div>
+<!-- 13:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24 bg-surface-variant/20">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">01:00 PM</div>
+<div class="relative flex items-center justify-center text-outline font-label-md text-label-md uppercase tracking-widest">Almuerzo</div>
+</div>
+<!-- 14:00 -->
+<div class="grid grid-cols-[80px_1fr] border-b border-surface-variant/30 h-24">
+<div class="p-sm text-right font-label-md text-label-md text-outline relative -top-3">02:00 PM</div>
+<div class="relative"></div>
+</div>
+<!-- Appointments (Absolute positioning within the relative container overlaying the grid) -->
+<!-- Calculations: Col width ~ 20%. Col offsets: Mon=80px, Tue=80px+20%, etc. Row height=96px (h-24). -->
+<!-- Appointment 1: Monday 09:30 - 10:30 (Cleaning) -->
+<div class="absolute top-[48px] left-[80px] w-[calc((100%-80px)/5-8px)] h-[96px] ml-[4px] bg-primary-container/90 backdrop-blur-sm border border-primary/20 rounded-lg p-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between overflow-hidden z-10">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-label-md text-on-primary-container font-bold truncate">Sarah Jenkins</h4>
+</div>
+<p class="font-body-sm text-[11px] leading-tight text-on-primary-container/80">09:30 - 10:30</p>
+<p class="font-body-sm text-[11px] leading-tight text-on-primary-container/90 font-medium mt-1">Limpieza Profunda</p>
+</div>
+<div class="flex items-center gap-1 mt-auto pt-1">
+<span class="inline-block px-1.5 py-0.5 rounded bg-white/30 text-on-primary-container text-[10px] font-bold">C-1</span>
+<span class="text-[10px] text-on-primary-container/80 truncate">Dr. Smith</span>
+</div>
+</div>
+<!-- Appointment 2: Tuesday 10:00 - 11:30 (Surgery) -->
+<!-- Top: h-24 = 96px. Left: 80px + 1 column width -->
+<div class="absolute top-[96px] left-[calc(80px+(100%-80px)/5)] w-[calc((100%-80px)/5-8px)] h-[144px] ml-[4px] bg-secondary-container/90 backdrop-blur-sm border border-secondary/20 rounded-lg p-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between overflow-hidden z-10">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-label-md text-on-secondary-container font-bold truncate">Michael Chang</h4>
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container">priority_high</span>
+</div>
+<p class="font-body-sm text-[11px] leading-tight text-on-secondary-container/80">10:00 - 11:30</p>
+<p class="font-body-sm text-[11px] leading-tight text-on-secondary-container/90 font-medium mt-1">Endodoncia</p>
+</div>
+<div class="flex items-center gap-1 mt-auto pt-1">
+<span class="inline-block px-1.5 py-0.5 rounded bg-white/30 text-on-secondary-container text-[10px] font-bold">C-2</span>
+<span class="text-[10px] text-on-secondary-container/80 truncate">Dra. Doe</span>
+</div>
+</div>
+<!-- Appointment 3: Tuesday 14:00 - 14:45 (Checkup) -->
+<div class="absolute top-[480px] left-[calc(80px+(100%-80px)/5)] w-[calc((100%-80px)/5-8px)] h-[72px] ml-[4px] bg-tertiary-container/90 backdrop-blur-sm border border-tertiary/20 rounded-lg p-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between overflow-hidden z-10">
+<div>
+<div class="flex justify-between items-start mb-0.5">
+<h4 class="font-label-md text-label-md text-on-tertiary-container font-bold truncate">Emma Watson</h4>
+</div>
+<p class="font-body-sm text-[11px] leading-tight text-on-tertiary-container/80">14:00 - 14:45</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<p class="font-body-sm text-[10px] text-on-tertiary-container/90 font-medium truncate">Consulta</p>
+<span class="inline-block px-1.5 py-0.5 rounded bg-white/30 text-on-tertiary-container text-[9px] font-bold">C-1</span>
+</div>
+</div>
+<!-- Appointment 4: Wednesday 11:00 - 12:00 (Checkup) -->
+<div class="absolute top-[192px] left-[calc(80px+(100%-80px)/5*2)] w-[calc((100%-80px)/5-8px)] h-[96px] ml-[4px] bg-tertiary-container/90 backdrop-blur-sm border border-tertiary/20 rounded-lg p-sm shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between overflow-hidden z-10">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-label-md text-on-tertiary-container font-bold truncate">David Miller</h4>
+</div>
+<p class="font-body-sm text-[11px] leading-tight text-on-tertiary-container/80">11:00 - 12:00</p>
+<p class="font-body-sm text-[11px] leading-tight text-on-tertiary-container/90 font-medium mt-1">Blanqueamiento</p>
+</div>
+<div class="flex items-center gap-1 mt-auto pt-1">
+<span class="inline-block px-1.5 py-0.5 rounded bg-white/30 text-on-tertiary-container text-[10px] font-bold">C-3</span>
+<span class="text-[10px] text-on-tertiary-container/80 truncate">Dr. Smith</span>
+</div>
+</div>
+<!-- Current Time Indicator Line (Tuesday 11:15) -->
+<div class="absolute top-[216px] left-[80px] right-0 h-[2px] bg-error z-20 pointer-events-none flex items-center">
+<div class="w-2 h-2 rounded-full bg-error absolute -left-1"></div>
+</div>
+</div>
+</div>
+<!-- Legend / Footer -->
+<div class="p-sm bg-surface-container-lowest border-t border-surface-variant flex items-center gap-md">
+<span class="font-label-md text-label-md text-outline">Leyenda:</span>
+<div class="flex items-center gap-xs"><span class="w-3 h-3 rounded-full bg-tertiary-container"></span><span class="font-body-sm text-body-sm text-on-surface-variant">Consulta</span></div>
+<div class="flex items-center gap-xs"><span class="w-3 h-3 rounded-full bg-primary-container"></span><span class="font-body-sm text-body-sm text-on-surface-variant">Limpieza/Cosmética</span></div>
+<div class="flex items-center gap-xs"><span class="w-3 h-3 rounded-full bg-secondary-container"></span><span class="font-body-sm text-body-sm text-on-surface-variant">Cirugía/Compleja</span></div>
+</div>
+</div>
+<!-- Right Column: Reminders & Mini Info (Col 10-12) -->
+<div class="col-span-12 @4xl:col-span-3 flex flex-col gap-lg">
+<!-- Doctor Availability Snippet -->
+<div class="glass-card rounded-2xl p-md">
+<h3 class="font-headline-sm text-headline-sm text-on-background mb-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">groups</span>
+                            De Guardia Hoy
+                        </h3>
+<div class="space-y-sm mt-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Dr. Smith" class="w-full h-full object-cover" data-alt="Professional headshot of a male dentist in a white coat, smiling warmly. Crisp, clinical yet friendly lighting. Soft gradient background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKYrpXJhiqg_w1AzZZUM34-bi6Nm1uqziqdmoqVxGtH9Cq8K8b4kS3doePzBdAPpN-KAjoeLXSf6k-4rJigrqi-7bQzwQi4-UwFXTHAdmhM5Fyq1cy6kYYirXPpNMWQ9i2uug2ACnG4MoaVaBcHS5YhRv_nnYnbL_nMRc2OnQoKsAqFFBj1Uu0BxUEiOuRwpenidITGj8zvEUBeQZpI6gT536XlA__CygfL4k5qv6P47d06oIgXnisPb5vr9HCYb5fkKCsGxuyBT6x"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Dr. Smith</p>
+<p class="font-body-sm text-[11px] text-outline">Consultorio 1</p>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Dra. Doe" class="w-full h-full object-cover" data-alt="Professional headshot of a female dentist in a white coat, focused expression. Crisp, clinical lighting. Soft gradient background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeo8scpTbEEv3BXXAuV9QxPN9rE_XPP-VGhkYLU1rvPahcz99BJmBXv6hcFb9UgBdKg1MphegnX9KZCvyUecz9oJYusR9zx68UmPO4lMYX0SFnBAux5AiCpgtzyXmODbuZj1lkfO-jKDUeG85vTZlsTNnfNmPMbTUFyuq6IUOKGlutkI1JS54L0kpLXk3xWcRj8t0-wMLHZhMgUv_xb9NghsyrBMoofTDIUOuSqJlemicqsmSenzSFiKSH-CzjjusO3tyJqC94jP4c"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Dra. Doe</p>
+<p class="font-body-sm text-[11px] text-outline">Consultorio 2</p>
+</div>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+</div>
+</div>
+<!-- Today's Reminders Widget -->
+<div class="glass-card rounded-2xl flex-1 flex flex-col overflow-hidden">
+<div class="p-md border-b border-surface-variant/50 bg-gradient-to-r from-surface-container-lowest to-surface-bright">
+<h3 class="font-headline-sm text-headline-sm text-on-background flex items-center justify-between">
+                                Recordatorios de Hoy
+                                <span class="bg-error-container text-on-error-container px-2 py-0.5 rounded-full font-label-md text-[10px]">3 Tareas</span>
+</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-md">
+<!-- Reminder Item 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-sm shadow-sm hover:border-primary/50 transition-colors group">
+<div class="flex justify-between items-start mb-1">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">phone_in_talk</span>
+<span class="font-label-md text-label-md text-on-surface">Llamar Paciente</span>
+</div>
+<span class="font-body-sm text-[10px] text-outline">Atrasado</span>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-snug mb-2">Hacer seguimiento con <strong class="text-on-background">Robert Fox</strong> sobre el dolor post-extracción.</p>
+<div class="flex gap-sm">
+<button class="flex-1 py-1 rounded border border-outline-variant text-on-surface-variant font-label-md text-[11px] hover:bg-surface-variant transition-colors">Descartar</button>
+<button class="flex-1 py-1 rounded bg-secondary text-on-secondary font-label-md text-[11px] shadow-sm hover:bg-secondary/90 transition-colors">Llamar Ahora</button>
+</div>
+</div>
+<!-- Reminder Item 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-sm shadow-sm hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-1">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-primary">fact_check</span>
+<span class="font-label-md text-label-md text-on-surface">Prep. Materiales</span>
+</div>
+<span class="font-body-sm text-[10px] text-outline">14:00</span>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-snug">Preparar kit de implantes para la cirugía de la Dra. Doe a las 2PM en el Consultorio 2.</p>
+</div>
+<!-- Reminder Item 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-sm shadow-sm hover:border-primary/50 transition-colors opacity-70">
+<div class="flex justify-between items-start mb-1">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">inventory</span>
+<span class="font-label-md text-label-md text-on-surface">Reabastecer</span>
+</div>
+</div>
+<p class="font-body-md text-[13px] text-on-surface-variant leading-snug">Poco stock de resina compuesta (tono A2). Ordenar al proveedor.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
