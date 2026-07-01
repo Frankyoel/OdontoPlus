@@ -1,0 +1,78 @@
+======================================================================
+                  DOCUMENTACIÓN DEL PROYECTO: ODONTOPLUS
+======================================================================
+
+1. DESCRIPCIÓN GENERAL
+----------------------------------------------------------------------
+OdontoPlus es un sistema web para la gestión integral de un centro 
+odontológico. Está construido como una "Single Page Application" (SPA) 
+usando tecnologías web nativas (HTML5, CSS3, JavaScript), 
+sin depender de frameworks externos pesados como React o Angular, 
+lo que lo hace muy rápido y fácil de mantener.
+
+Diseño: Implementa una interfaz moderna con efectos "Glassmorphism" 
+(tarjetas de cristal) y soporta modo claro y modo oscuro.
+
+
+2. ARQUITECTURA DEL PROYECTO
+----------------------------------------------------------------------
+La estructura de carpetas es la siguiente:
+
+odontoplus/
+  ├── index.html          # Archivo principal que carga todo el sistema
+  │
+  ├── css/                # Estilos CSS
+  │   ├── variables.css   # Tokens de diseño (Colores, Modo Oscuro, Tamaños)
+  │   ├── base.css        # Reseteo de estilos y tipografía (Inter)
+  │   ├── layout.css      # Estructura principal (Sidebar, Topbar, Layout)
+  │   └── components.css  # Componentes (Tarjetas, Botones, Inputs, Tablas)
+  │
+  └── js/                 # Lógica de la aplicación
+      ├── app.js          # Punto de entrada de la aplicación
+      ├── router.js       # Enrutador para navegar sin recargar la página
+      ├── auth.js         # Gestión de inicio y cierre de sesión
+      ├── permissions.js  # Control de acceso basado en roles
+      ├── theme.js        # Gestor de Modo Claro / Modo Oscuro
+      │
+      ├── data/           # Simulación de Base de Datos y Modelos
+      │   ├── models.js   # Definición de estructuras de datos y roles
+      │   ├── seedData.js # Datos de prueba iniciales (Mock data)
+      │   └── dataService.js # Lógica (CRUD) para manejar la base de datos
+      │
+      ├── components/     # Componentes de Interfaz Reutilizables
+      │   ├── sidebar.js  # Menú lateral dinámico
+      │   ├── topbar.js   # Barra superior
+      │   ├── modal.js    # Ventanas emergentes
+      │   ├── toast.js    # Notificaciones flotantes
+      │   ├── table.js    # Tablas dinámicas
+      │   └── charts.js   # Gráficos con HTML/CSS
+      │
+      └── modules/        # Pantallas del Sistema (Módulos)
+          ├── login.js    # Inicio de sesión
+          ├── dashboard.js# Panel principal (métricas y próximas citas)
+          ├── patients.js # Gestión de pacientes
+          ├── appointments.js # Agenda y citas
+          └── inventory.js# Control de inventario de insumos
+
+
+3. SISTEMA DE ROLES Y PERMISOS
+----------------------------------------------------------------------
+El sistema cuenta con un control de acceso robusto. Dependiendo del 
+rol, el usuario verá diferentes partes del menú y tendrá diferentes permisos.
+
+Roles disponibles:
+1. Administrador (admin): Acceso total a todos los módulos.
+2. Doctor (doctor): Solo ve Pacientes y Agenda (Citas asignadas a él).
+3. Recepcionista (receptionist): Gestiona Pacientes, Agenda y Facturación.
+4. Asistente Dental (assistant): Ve Pacientes y Agenda de forma limitada.
+5. Jefe de Almacén (warehouse): Solo ve el Inventario.
+
+
+4. INFO DE USO
+----------------------------------------------------------------------
+- El sistema almacena los datos temporales en el "localStorage" del 
+  navegador.
+- En la pantalla de Login, puedes hacer clic en los perfiles rápidos
+  para iniciar sesión de inmediato y probar los diferentes roles.
+- El modo oscuro guarda tu preferencia para que no tengas que 
+  cambiarlo cada vez que entras.
