@@ -55,6 +55,11 @@ window.Modules.Billing = {
                                             <span class="material-symbols-outlined">check_circle</span>
                                         </button>
                                         ` : ''}
+                                        ${item.estado !== 'anulado' && Permissions.canEdit('facturacion') ? `
+                                        <button class="btn--icon-sm" style="color: var(--color-error);" onclick="window.Modules.Billing.voidInvoice('${id}')" title="Anular Boleta">
+                                            <span class="material-symbols-outlined">do_not_disturb_on</span>
+                                        </button>
+                                        ` : ''}
                                     ` }
                                 ],
                                 data: facturas.sort((a, b) => new Date(b.fechaEmision) - new Date(a.fechaEmision))
@@ -138,6 +143,83 @@ window.Modules.Billing = {
     printInvoice(id) {
         const factura = DataService.getFactura(id);
         if (!factura) return;
-        Toast.info(`Generando PDF para impresión de boleta ${factura.numero}...`);
+
+        const itemsHtml = factura.items.map(item => `
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);">
+                <td style="padding: var(--space-xs) 0;">${item.descripcion}</td>
+                <td style="padding: var(--space-xs) 0; text-align: center;">${item.cantidad}</td>
+                <td style="padding: var(--space-xs) 0; text-align: right;">${Models.formatMoney(item.precio)}</td>
+                <td style="padding: var(--space-xs) 0; text-align: right;">${Models.formatMoney(item.precio * item.cantidad)}</td>
+            </tr>
+        `).join('');
+
+        const contentHtml = `
+            <div id="invoice-print-area" style="padding: var(--space-md); background: white; color: black; font-family: monospace; border: 1px solid var(--color-outline-variant); border-radius: var(--radius-md); max-height: 400px; overflow-y: auto;">
+                <div style="text-align: center; margin-bottom: var(--space-md);">
+                    <h3 style="margin: 0; font-size: 18px; font-weight: bold; color: var(--color-primary);">OdontoPlus</h3>
+                    <p style="margin: 0; font-size: 11px;">RUC: 20123456789</p>
+                    <p style="margin: 0; font-size: 11px;">Av. Javier Prado Este 1234, San Isidro, Lima</p>
+                    <p style="margin: 0; font-size: 11px;">Telf: (01) 444-5555</p>
+                </div>
+                <div style="margin-bottom: var(--space-sm); font-size: 12px; border-bottom: 1px dashed black; padding-bottom: var(--space-xs);">
+                    <div><b>BOLETA DE VENTA ELECTRÓNICA:</b> ${factura.numero}</div>
+                    <div><b>Fecha de Emisión:</b> ${Models.formatDateTime(factura.fechaEmision)}</div>
+                    ${factura.fechaPago ? `<div><b>Fecha de Pago:</b> ${Models.formatDateTime(factura.fechaPago)}</div>` : ''}
+                    <div><b>Estado:</b> <span style="text-transform: uppercase; font-weight: bold; color: ${factura.estado === 'pagado' ? 'var(--color-success)' : (factura.estado === 'anulado' ? 'var(--color-error)' : 'var(--color-warning)')}">${factura.estado}</span></div>
+                </div>
+                <div style="margin-bottom: var(--space-sm); font-size: 12px; border-bottom: 1px dashed black; padding-bottom: var(--space-xs);">
+                    <div><b>Paciente:</b> ${factura.pacienteNombre}</div>
+                    <div><b>Método de Pago:</b> ${Models.METODOS_PAGO[factura.metodoPago] || factura.metodoPago}</div>
+                </div>
+                <table style="width: 100%; font-size: 11px; border-collapse: collapse; margin-bottom: var(--space-sm);">
+                    <thead>
+                        <tr style="border-bottom: 1px solid black; font-weight: bold;">
+                            <th style="text-align: left; padding-bottom: 4px;">Descripción</th>
+                            <th style="text-align: center; padding-bottom: 4px;">Cant</th>
+                            <th style="text-align: right; padding-bottom: 4px;">P. Unit</th>
+                            <th style="text-align: right; padding-bottom: 4px;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                <div style="border-top: 1px dashed black; padding-top: var(--space-xs); font-size: 11px; text-align: right; display: flex; flex-direction: column; gap: 2px;">
+                    <div>Subtotal: ${Models.formatMoney(factura.subtotal)}</div>
+                    <div>Descuento: ${Models.formatMoney(factura.descuento)}</div>
+                    <div style="font-size: 13px; font-weight: bold; margin-top: 2px; border-top: 1px solid black; padding-top: 2px;">TOTAL: ${Models.formatMoney(factura.total)}</div>
+                </div>
+            </div>
+        `;
+
+        Modal.open({
+            title: `Visualizar Boleta ${factura.numero}`,
+            content: contentHtml,
+            footer: `
+                <button class="btn btn--secondary" onclick="Modal.close()">Cerrar</button>
+                <button class="btn btn--primary" onclick="window.print()">
+                    <span class="material-symbols-outlined" style="font-size: 16px; margin-right: 4px;">print</span>
+                    Imprimir / PDF
+                </button>
+            `,
+            size: 'md'
+        });
+    },
+
+    voidInvoice(id) {
+        const factura = DataService.getFactura(id);
+        if (!factura) return;
+
+        Modal.confirm({
+            title: 'Anular Boleta de Venta',
+            message: `¿Estás seguro de que deseas anular la boleta ${factura.numero}? Esta acción cancelará el ingreso financiero y no se puede deshacer.`,
+            confirmText: 'Sí, anular boleta',
+            variant: 'danger',
+            onConfirm: () => {
+                DataService.updateFactura(id, { estado: 'anulado' });
+                Toast.success(`Boleta ${factura.numero} anulada correctamente`);
+                this.render();
+            }
+        });
     }
 };

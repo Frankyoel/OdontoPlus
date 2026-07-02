@@ -5,9 +5,21 @@
 window.Modules = window.Modules || {};
 
 window.Modules.Inventory = {
+    currentCategoryFilter: '',
+    currentStateFilter: '',
+
     render() {
         const container = document.getElementById('app-content');
-        const inventario = DataService.getInventario();
+        let inventario = DataService.getInventario();
+        
+        // Aplicar filtros
+        if (this.currentCategoryFilter) {
+            inventario = inventario.filter(i => i.categoria === this.currentCategoryFilter);
+        }
+        if (this.currentStateFilter) {
+            inventario = inventario.filter(i => i.estado === this.currentStateFilter);
+        }
+
         const proveedores = DataService.getProveedores();
         const canEdit = Permissions.canEdit('inventario');
 
@@ -65,10 +77,10 @@ window.Modules.Inventory = {
                         <div class="glass-card p-lg mb-xl">
                             <div class="flex justify-between items-center mb-md">
                                 <div class="tabs" style="border-bottom: none; gap: var(--space-sm);">
-                                    <button class="chip chip--primary" onclick="window.Modules.Inventory.filterByCategory('')">Todos</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Inventory.filterByCategory('insumos_clinicos')">Insumos Clínicos</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Inventory.filterByCategory('odontologia')">Odontología</button>
-                                    <button class="chip chip--error" onclick="window.Modules.Inventory.filterByState('critico')">Críticos</button>
+                                    <button class="chip ${(!this.currentCategoryFilter && !this.currentStateFilter) ? 'chip--primary' : 'chip--outline'}" onclick="window.Modules.Inventory.filterByCategory('')">Todos</button>
+                                    <button class="chip ${this.currentCategoryFilter === 'insumos_clinicos' ? 'chip--primary' : 'chip--outline'}" onclick="window.Modules.Inventory.filterByCategory('insumos_clinicos')">Insumos Clínicos</button>
+                                    <button class="chip ${this.currentCategoryFilter === 'odontologia' ? 'chip--primary' : 'chip--outline'}" onclick="window.Modules.Inventory.filterByCategory('odontologia')">Odontología</button>
+                                    <button class="chip ${this.currentStateFilter === 'critico' ? 'chip--error' : 'chip--outline'}" onclick="window.Modules.Inventory.filterByState('critico')">Críticos</button>
                                 </div>
                             </div>
                             
@@ -92,11 +104,17 @@ window.Modules.Inventory = {
                                         <button class="btn--icon-sm" style="color: var(--color-primary);" onclick="window.Modules.Inventory.showAddStockModal('${id}')" title="Añadir Stock">
                                             <span class="material-symbols-outlined">add_circle</span>
                                         </button>
-                                        <button class="btn--icon-sm" style="color: var(--color-on-surface-variant);" onclick="Toast.info('Función de edición en desarrollo')" title="Editar">
+                                        <button class="btn--icon-sm" style="color: var(--color-tertiary);" onclick="window.Modules.Inventory.showRemoveStockModal('${id}')" title="Descontar Stock">
+                                            <span class="material-symbols-outlined">remove_circle</span>
+                                        </button>
+                                        <button class="btn--icon-sm" style="color: var(--color-on-surface-variant);" onclick="window.Modules.Inventory.showEditItemModal('${id}')" title="Editar">
                                             <span class="material-symbols-outlined">edit</span>
                                         </button>
+                                        <button class="btn--icon-sm" style="color: var(--color-error);" onclick="window.Modules.Inventory.deleteItem('${id}')" title="Eliminar Artículo">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
                                         ` : `
-                                        <button class="btn--icon-sm" style="color: var(--color-primary);" onclick="Toast.info('Solicitar reposición al almacén')" title="Solicitar">
+                                        <button class="btn--icon-sm" style="color: var(--color-primary);" onclick="Toast.success('Solicitud de reposición enviada al almacén')" title="Solicitar">
                                             <span class="material-symbols-outlined">pan_tool</span>
                                         </button>
                                         `}
@@ -143,11 +161,15 @@ window.Modules.Inventory = {
     },
 
     filterByCategory(cat) {
-        Toast.info('Filtrando por categoría...');
+        this.currentCategoryFilter = cat;
+        this.currentStateFilter = '';
+        this.render();
     },
 
     filterByState(state) {
-        Toast.info('Mostrando solo stock crítico...');
+        this.currentStateFilter = state;
+        this.currentCategoryFilter = '';
+        this.render();
     },
 
     showNewItemModal() {
@@ -174,6 +196,93 @@ window.Modules.Inventory = {
                 
                 const item = DataService.createItemInventario(data);
                 Toast.success(`Artículo ${item.nombre} registrado con éxito`);
+                this.render();
+            }
+        });
+    },
+
+    showEditItemModal(id) {
+        const item = DataService.getItemInventario(id);
+        if (!item) return;
+
+        const proveedores = DataService.getProveedores();
+
+        Modal.form({
+            title: 'Editar Artículo de Inventario',
+            fields: [
+                { name: 'sku', label: 'SKU', value: item.sku, required: true, readOnly: true },
+                { name: 'nombre', label: 'Nombre del Artículo', value: item.nombre, required: true },
+                { name: 'categoria', label: 'Categoría', type: 'select', options: Object.keys(Models.CATEGORIAS_INVENTARIO).map(k => ({ value: k, label: Models.CATEGORIAS_INVENTARIO[k] })), value: item.categoria, required: true },
+                { name: 'unidad', label: 'Unidad de Medida', type: 'select', options: [
+                    {value:'unidad', label:'Unidad'}, {value:'caja', label:'Caja'}, {value:'paquete', label:'Paquete'}, {value:'litro', label:'Litro'}, {value:'kg', label:'Kilogramo'}
+                ], value: item.unidad, required: true },
+                { name: 'stockMinimo', label: 'Stock Mínimo (Alerta)', type: 'number', value: item.stockMinimo, required: true },
+                { name: 'precioUnitario', label: 'Costo Unitario (S/)', type: 'number', value: item.precioUnitario, required: true },
+                { name: 'proveedor', label: 'Proveedor Principal', type: 'select', options: proveedores.map(p => ({ value: p.nombre, label: p.nombre })), value: item.proveedor },
+                { name: 'ubicacion', label: 'Ubicación en Almacén', value: item.ubicacion }
+            ],
+            onSubmit: (data) => {
+                data.stockMinimo = parseInt(data.stockMinimo, 10);
+                data.precioUnitario = parseFloat(data.precioUnitario);
+                
+                const updates = {
+                    ...data,
+                    estado: Models.calcularEstadoStock(item.stockActual, data.stockMinimo)
+                };
+                DataService.updateItemInventario(id, updates);
+                Toast.success(`Artículo ${item.nombre} actualizado con éxito`);
+                this.render();
+            }
+        });
+    },
+
+    deleteItem(id) {
+        const item = DataService.getItemInventario(id);
+        if (!item) return;
+
+        Modal.confirm({
+            title: 'Eliminar Artículo',
+            message: `¿Estás seguro de que deseas eliminar el artículo ${item.nombre}? Esta acción no se puede deshacer.`,
+            confirmText: 'Sí, eliminar',
+            variant: 'danger',
+            onConfirm: () => {
+                DataService.delete('inventario', id);
+                Toast.success(`Artículo ${item.nombre} eliminado correctamente`);
+                this.render();
+            }
+        });
+    },
+
+    showRemoveStockModal(id) {
+        const item = DataService.getItemInventario(id);
+        if (!item) return;
+
+        Modal.form({
+            title: `Descontar Stock: ${item.nombre}`,
+            submitText: 'Registrar Salida',
+            fields: [
+                { name: 'cantidad', label: `Cantidad a retirar (${item.unidad})`, type: 'number', required: true },
+                { name: 'motivo', label: 'Motivo de Salida', type: 'select', options: [
+                    { value: 'consumo', label: 'Consumo en clínica' },
+                    { value: 'merma', label: 'Merma / Dañado' },
+                    { value: 'vencido', label: 'Vencimiento' },
+                    { value: 'ajuste', label: 'Ajuste de inventario' }
+                ], required: true }
+            ],
+            onSubmit: (data) => {
+                const cantidad = parseInt(data.cantidad, 10);
+                if (cantidad > item.stockActual) {
+                    Toast.error('La cantidad a retirar no puede ser mayor al stock actual');
+                    return;
+                }
+                const nuevoStock = item.stockActual - cantidad;
+                
+                DataService.updateItemInventario(id, { 
+                    stockActual: nuevoStock,
+                    estado: Models.calcularEstadoStock(nuevoStock, item.stockMinimo)
+                });
+                
+                Toast.success(`Se retiraron ${cantidad} unidades. Nuevo stock: ${nuevoStock}`);
                 this.render();
             }
         });

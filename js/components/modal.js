@@ -74,7 +74,7 @@ const Modal = {
                 return `
                     <div class="input-group">
                         <label class="input-label">${f.label}</label>
-                        <select class="select-field" id="modal-field-${f.name}" name="${f.name}" ${f.required ? 'required' : ''}>
+                        <select class="select-field" id="modal-field-${f.name}" name="${f.name}" ${f.required ? 'required' : ''} ${f.readOnly ? 'disabled style="opacity: 0.7; pointer-events: none;"' : ''}>
                             ${options}
                         </select>
                     </div>
@@ -84,14 +84,14 @@ const Modal = {
                 return `
                     <div class="input-group">
                         <label class="input-label">${f.label}</label>
-                        <textarea class="input-field" id="modal-field-${f.name}" name="${f.name}" rows="${f.rows || 3}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''}>${f.value || ''}</textarea>
+                        <textarea class="input-field" id="modal-field-${f.name}" name="${f.name}" rows="${f.rows || 3}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.readOnly ? 'readonly style="opacity: 0.7; background-color: var(--color-surface-container-low);"' : ''}>${f.value || ''}</textarea>
                     </div>
                 `;
             }
             return `
                 <div class="input-group">
                     <label class="input-label">${f.label}</label>
-                    <input class="input-field" type="${f.type || 'text'}" id="modal-field-${f.name}" name="${f.name}" value="${f.value || ''}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''}>
+                    <input class="input-field" type="${f.type || 'text'}" id="modal-field-${f.name}" name="${f.name}" value="${f.value || ''}" placeholder="${f.placeholder || ''}" ${f.required ? 'required' : ''} ${f.readOnly ? 'readonly style="opacity: 0.7; background-color: var(--color-surface-container-low);"' : ''}>
                 </div>
             `;
         }).join('');

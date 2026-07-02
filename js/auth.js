@@ -36,7 +36,7 @@ const Auth = {
     /** Cierra la sesión */
     logout() {
         sessionStorage.removeItem(this.SESSION_KEY);
-        window.location.hash = '#/login';
+        window.location.hash = '/login';
     },
 
     /** Obtiene la sesión actual */

@@ -22,7 +22,8 @@ const Router = {
 
     /** Navega a una ruta */
     navigate(path) {
-        window.location.hash = path;
+        // Acepta tanto '#/ruta' como '/ruta'
+        window.location.hash = path.startsWith('#') ? path.slice(1) : path;
     },
 
     /** Obtiene la ruta actual */
@@ -46,13 +47,13 @@ const Router = {
 
         // Si no está autenticado y no es login, redirigir
         if (basePath !== '/login' && !Auth.isAuthenticated()) {
-            this.navigate('#/login');
+            this.navigate('/login');
             return;
         }
 
         // Si está autenticado y es login, redirigir a dashboard
         if (basePath === '/login' && Auth.isAuthenticated()) {
-            this.navigate('#/dashboard');
+            this.navigate('/dashboard');
             return;
         }
 
