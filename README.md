@@ -31,6 +31,16 @@ dotnet run
 ```
 *El backend quedará escuchando por defecto en la dirección: **`http://localhost:5000`**.*
 
+### 1.1 Configurar el motor de Base de Datos (SQLite / SQL Server)
+El sistema soporta de manera híbrida **SQLite** y **SQL Server**. Para cambiar de motor:
+1. Abre [appsettings.json](file:///home/frankyoel/Documentos/OtrosProyectos/Pagina%20web-OdontoPlus/backend/appsettings.json).
+2. Modifica la propiedad `"DatabaseProvider"` a `"Sqlite"` o `"SqlServer"`.
+3. Ajusta la cadena de conexión correspondiente en `"ConnectionStrings"`.
+4. Si cambiaste a SQL Server, aplica la estructura ejecutando en la consola `/backend`:
+   ```bash
+   dotnet ef database update
+   ```
+
 ### 2. Iniciar el Frontend (SPA)
 1. Abre la raíz del proyecto en tu editor de código preferido (como Visual Studio Code).
 2. Haz clic derecho sobre el archivo `index.html` y selecciona **Open with Live Server**.

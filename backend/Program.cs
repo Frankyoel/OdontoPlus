@@ -15,12 +15,29 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configuración de la Base de Datos (SQLite para desarrollo)
+// Configuración de la Base de Datos (SQLite o SQL Server según appsettings.json)
+var dbProvider = builder.Configuration["DatabaseProvider"] ?? "Sqlite";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=odontoplus.db"));
+{
+    if (dbProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
+    }
+    else
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
+    }
+});
 
-// Configuración de Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+// Configuración de Identity con políticas de contraseña relajadas para permitir credenciales demo
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 4;
+})
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

@@ -1,0 +1,24 @@
+## Core Build Outputs
+**/bin/
+**/obj/
+
+## SQLite Databases
+backend/odontoplus.db
+backend/odontoplus.db-shm
+backend/odontoplus.db-wal
+backend/odontoplus.db-journal
+
+## OS Metadata
+.DS_Store
+Thumbs.db
+
+## IDEs and Editors
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Temporary installation scripts
+backend/dotnet-install.sh

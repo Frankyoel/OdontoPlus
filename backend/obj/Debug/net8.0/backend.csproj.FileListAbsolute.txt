@@ -1,3 +1,4 @@
+/home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/appsettings.json
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/backend
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/backend.deps.json
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/backend.runtimeconfig.json
@@ -6,6 +7,7 @@
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Azure.Core.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Azure.Identity.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Humanizer.dll
+/home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/bin/Debug/net8.0/Microsoft.CodeAnalysis.dll
@@ -148,7 +150,7 @@
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.backend.props
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/staticwebassets.pack.json
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/scopedcss/bundle/backend.styles.css
-/home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/backend.csproj.Up2Date
+/home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/backend.csproj.CopyComplete
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/backend.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/refint/backend.dll
 /home/frankyoel/Documentos/OtrosProyectos/Pagina web-OdontoPlus/backend/obj/Debug/net8.0/backend.pdb

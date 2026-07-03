@@ -25,6 +25,9 @@ backend/
 * **Strategies:** Encapsula el cálculo de permisos en tiempo de ejecución para cada tipo de rol.
 * **Services:** Configura servicios compartidos persistentes en toda la aplicación.
 
+### Persistencia Híbrida (SQLite y SQL Server)
+La aplicación cuenta con configuración dinámica para bases de datos. El proveedor se resuelve en el arranque mediante el parámetro `"DatabaseProvider"` definido en `appsettings.json`. De esta manera, el sistema es compatible tanto con un entorno de desarrollo ágil basado en **SQLite** como con una base de datos de producción empresarial basada en **SQL Server (MS SQL)** sin alterar el código fuente.
+
 ---
 
 ## 2. Patrones de Diseño Implementados

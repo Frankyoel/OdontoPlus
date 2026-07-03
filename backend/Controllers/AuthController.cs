@@ -65,7 +65,7 @@ namespace backend.Controllers
             var permissionContext = new RolePermissionContext(strategy);
             var permissions = new
             {
-                dashboard = permissionContext.CanAccess("dashboard") ? new { ver = true } : new { ver = false },
+                dashboard = new { ver = true },  // El dashboard es siempre accesible para usuarios autenticados
                 pacientes = new
                 {
                     ver = permissionContext.CanAccess("patients"),
@@ -75,7 +75,9 @@ namespace backend.Controllers
                 },
                 agenda = new { ver = permissionContext.CanAccess("appointments") },
                 inventario = new { ver = permissionContext.CanAccess("inventory") },
-                facturacion = new { ver = permissionContext.CanAccess("billing") }
+                facturacion = new { ver = permissionContext.CanAccess("billing") },
+                reportes = new { ver = strategy is not WarehousePermissionStrategy && strategy is not AssistantPermissionStrategy },
+                configuracion = new { ver = strategy is AdminPermissionStrategy }
             };
 
             var token = GenerateJwtToken(user, role);
