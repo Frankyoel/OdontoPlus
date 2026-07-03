@@ -89,7 +89,7 @@ window.Modules.Login = {
         `;
     },
 
-    handleLogin(e) {
+    async handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -99,26 +99,24 @@ window.Modules.Login = {
         btn.innerHTML = `<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">autorenew</span> Procesando...`;
         btn.disabled = true;
 
-        setTimeout(() => {
-            const result = Auth.login(email, password);
+        const result = await Auth.login(email, password);
+        
+        if (result.success) {
+            Toast.success(`¡Bienvenido/a, ${result.user.nombre}!`);
+            Router.navigate('#/dashboard');
+        } else {
+            errorDiv.textContent = result.error;
+            errorDiv.classList.remove('hidden');
+            btn.innerHTML = `Ingresar al Sistema <span class="material-symbols-outlined">arrow_forward</span>`;
+            btn.disabled = false;
             
-            if (result.success) {
-                Toast.success(`¡Bienvenido/a, ${result.user.nombre}!`);
-                Router.navigate('#/dashboard');
-            } else {
-                errorDiv.textContent = result.error;
-                errorDiv.classList.remove('hidden');
-                btn.innerHTML = `Ingresar al Sistema <span class="material-symbols-outlined">arrow_forward</span>`;
-                btn.disabled = false;
-                
-                // Shake animation for error
-                const card = document.querySelector('.login-card');
-                card.style.transform = 'translateX(-10px)';
-                setTimeout(() => card.style.transform = 'translateX(10px)', 100);
-                setTimeout(() => card.style.transform = 'translateX(-10px)', 200);
-                setTimeout(() => card.style.transform = 'translateX(0)', 300);
-            }
-        }, 800); // Simulate network delay
+            // Shake animation for error
+            const card = document.querySelector('.login-card');
+            card.style.transform = 'translateX(-10px)';
+            setTimeout(() => card.style.transform = 'translateX(10px)', 100);
+            setTimeout(() => card.style.transform = 'translateX(-10px)', 200);
+            setTimeout(() => card.style.transform = 'translateX(0)', 300);
+        }
     },
 
     fillDemo(email, pass) {

@@ -1,113 +1,67 @@
 /* ============================================================
    OdontoPlus — Permisos (permissions.js)
-   Control de acceso por rol
+   Control de acceso por rol gestionado dinámicamente desde el Backend
    ============================================================ */
 
 const Permissions = {
-    /** Matriz de permisos por rol y módulo */
-    matrix: {
-        administrador: {
-            dashboard: { ver: true, tipo: 'completo' },
-            pacientes: { ver: true, crear: true, editar: true, eliminar: true },
-            historial: { ver: true, crear: true, editar: true },
-            recetas: { ver: true, crear: true },
-            agenda: { ver: true, crear: true, editar: true, eliminar: true },
-            inventario: { ver: true, crear: true, editar: true, eliminar: true },
-            facturacion: { ver: true, crear: true, editar: true, eliminar: true },
-            reportes: { ver: true, tipo: 'todos' },
-            configuracion: { ver: true, crear: true, editar: true, eliminar: true }
-        },
-        odontologo: {
-            dashboard: { ver: true, tipo: 'clinico' },
-            pacientes: { ver: true, crear: false, editar: true, eliminar: false },
-            historial: { ver: true, crear: true, editar: true },
-            recetas: { ver: true, crear: true },
-            agenda: { ver: true, crear: false, editar: false, eliminar: false, soloPropio: true },
-            inventario: { ver: true, crear: false, editar: false, eliminar: false },
-            facturacion: { ver: false },
-            reportes: { ver: true, tipo: 'clinicos' },
-            configuracion: { ver: false }
-        },
-        asistente_dental: {
-            dashboard: { ver: true, tipo: 'clinico_limitado' },
-            pacientes: { ver: true, crear: false, editar: false, eliminar: false },
-            historial: { ver: true, crear: false, editar: false },
-            recetas: { ver: false },
-            agenda: { ver: true, crear: false, editar: false, eliminar: false },
-            inventario: { ver: false },
-            facturacion: { ver: false },
-            reportes: { ver: false },
-            configuracion: { ver: false }
-        },
-        recepcionista: {
-            dashboard: { ver: true, tipo: 'limitado' },
-            pacientes: { ver: true, crear: true, editar: false, eliminar: false },
-            historial: { ver: false },
-            recetas: { ver: false },
-            agenda: { ver: true, crear: true, editar: true, eliminar: true },
-            inventario: { ver: false },
-            facturacion: { ver: true, crear: true, editar: false, eliminar: false },
-            reportes: { ver: true, tipo: 'atenciones' },
-            configuracion: { ver: false }
-        },
-        almacenero: {
-            dashboard: { ver: true, tipo: 'inventario' },
-            pacientes: { ver: false },
-            historial: { ver: false },
-            recetas: { ver: false },
-            agenda: { ver: false },
-            inventario: { ver: true, crear: true, editar: true, eliminar: true },
-            facturacion: { ver: false },
-            reportes: { ver: true, tipo: 'inventario' },
-            configuracion: { ver: false }
-        }
+    /** Obtiene los permisos del usuario desde la sesión actual (provistos por el backend) */
+    getPermissions() {
+        const session = Auth.getSession();
+        return session ? session.permissions : null;
     },
 
     /** Verifica si el rol actual puede acceder a un módulo */
     canAccess(modulo) {
-        const rol = Auth.getCurrentRole();
-        if (!rol) return false;
-        const perms = this.matrix[rol]?.[modulo];
-        return perms?.ver === true;
+        const perms = this.getPermissions();
+        if (!perms) return false;
+        return perms[modulo]?.ver === true;
     },
 
     /** Verifica si puede crear en un módulo */
     canCreate(modulo) {
-        const rol = Auth.getCurrentRole();
-        if (!rol) return false;
-        return this.matrix[rol]?.[modulo]?.crear === true;
+        const perms = this.getPermissions();
+        if (!perms) return false;
+        return perms[modulo]?.crear === true;
     },
 
     /** Verifica si puede editar en un módulo */
     canEdit(modulo) {
-        const rol = Auth.getCurrentRole();
-        if (!rol) return false;
-        return this.matrix[rol]?.[modulo]?.editar === true;
+        const perms = this.getPermissions();
+        if (!perms) return false;
+        return perms[modulo]?.editar === true;
     },
 
     /** Verifica si puede eliminar en un módulo */
     canDelete(modulo) {
-        const rol = Auth.getCurrentRole();
-        if (!rol) return false;
-        return this.matrix[rol]?.[modulo]?.eliminar === true;
+        const perms = this.getPermissions();
+        if (!perms) return false;
+        return perms[modulo]?.eliminar === true;
     },
 
     /** Obtiene el tipo de dashboard para el rol actual */
     getDashboardType() {
+        // Lógica de fallback para visualización frontend, o puedes extender el backend
         const rol = Auth.getCurrentRole();
-        return this.matrix[rol]?.dashboard?.tipo || 'limitado';
+        if (rol === 'admin') return 'completo';
+        if (rol === 'doctor' || rol === 'assistant') return 'clinico';
+        if (rol === 'warehouse') return 'inventario';
+        return 'limitado';
     },
 
     /** Obtiene el tipo de reportes para el rol actual */
     getReportType() {
         const rol = Auth.getCurrentRole();
-        return this.matrix[rol]?.reportes?.tipo || null;
+        if (rol === 'admin') return 'todos';
+        if (rol === 'doctor') return 'clinicos';
+        if (rol === 'warehouse') return 'inventario';
+        if (rol === 'receptionist') return 'atenciones';
+        return null;
     },
 
     /** Obtiene los módulos del sidebar accesibles para el rol actual */
     getAccessibleModules() {
-        const rol = Auth.getCurrentRole();
-        if (!rol) return [];
+        const perms = this.getPermissions();
+        if (!perms) return [];
 
         const allModules = [
             { id: 'dashboard', label: 'Inicio', icon: 'dashboard', route: '#/dashboard' },
@@ -119,7 +73,16 @@ const Permissions = {
             { id: 'configuracion', label: 'Configuración', icon: 'settings', route: '#/configuracion' }
         ];
 
-        return allModules.filter(m => this.canAccess(m.id));
+        // Filtramos usando la matriz generada por el backend en `Auth.login`
+        // Nota: reportes y configuracion podrían añadirse a la estrategia del backend en el futuro.
+        return allModules.filter(m => {
+            if (m.id === 'reportes' || m.id === 'configuracion') {
+                const rol = Auth.getCurrentRole();
+                if (m.id === 'reportes') return ['admin', 'doctor', 'receptionist', 'warehouse'].includes(rol);
+                if (m.id === 'configuracion') return rol === 'admin';
+            }
+            return this.canAccess(m.id);
+        });
     }
 };
 
