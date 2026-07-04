@@ -23,7 +23,7 @@ cd backend
 # Restaurar paquetes NuGet
 dotnet restore
 
-# (Opcional - la base ya viene creada) Actualizar o regenerar la base de datos SQLite
+# Aplicar migraciones para crear/actualizar la base de datos (requerido para crear la tabla de Odontogramas)
 dotnet ef database update
 
 # Ejecutar el servidor backend

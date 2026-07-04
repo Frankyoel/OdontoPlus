@@ -19,9 +19,9 @@ backend/
 ```
 
 ### Contenido de las carpetas:
-* **Models:** Define la estructura de datos física de la aplicación (`Paciente`, `Cita`, `ArticuloInventario`, etc.) y extiende `IdentityUser` para el manejo de credenciales de usuario.
-* **Repositories:** Contiene las interfaces y clases genéricas para desacoplar el motor de base de datos de la lógica del negocio.
-* **Controllers:** Expone los endpoints RESTful (`/api/patients`, `/api/appointments`, etc.) protegidos por roles mediante políticas de autorización nativas.
+* **Models:** Define la estructura de datos física de la aplicación (`Paciente`, `Odontograma`, `Cita`, `ArticuloInventario`, etc.) y extiende `IdentityUser` para el manejo de credenciales de usuario.
+* **Repositories:** Contiene las interfaces y clases genéricas para desacoplar el motor de base de datos de la lógica del negocio. Se ha extendido con `FindWithIncludesAsync` para permitir eager loading dinámico de colecciones (como medicamentos de una receta).
+* **Controllers:** Expone los endpoints RESTful protegidos por roles mediante políticas de autorización nativas, incluyendo controladores especializados como `PatientsController`, `OdontogramaController`, `ClinicalHistoryController` y `PrescriptionsController` con soporte para consultas filtradas por paciente.
 * **Strategies:** Encapsula el cálculo de permisos en tiempo de ejecución para cada tipo de rol.
 * **Services:** Configura servicios compartidos persistentes en toda la aplicación.
 
@@ -72,7 +72,8 @@ sequenceDiagram
 
 ## 4. Conexión Frontend-Backend (Consumo de la API)
 
-* **Fetch API:** El frontend de Vanilla JS realiza llamadas HTTP a `http://localhost:5000/api/...` mediante funciones asíncronas (`async/await`).
+* **Migración a API REST (Módulo Pacientes):** El módulo de Pacientes (`js/modules/patients.js`) ha sido completamente migrado para consumir la API REST del backend de forma directa y asíncrona, eliminando por completo su dependencia de `DataService`/`localStorage`.
+* **Fetch API:** El frontend de Vanilla JS realiza llamadas HTTP a `http://localhost:5000/api/...` mediante funciones asíncronas (`async/await`) y helpers personalizados de conexión con manejo centralizado de errores.
 * **Bearer Token:** Para toda petición a recursos protegidos (ej. obtener lista de pacientes), el cliente extrae el token del `sessionStorage` e inyecta la cabecera de autenticación correspondiente:
   ```javascript
   headers: {
