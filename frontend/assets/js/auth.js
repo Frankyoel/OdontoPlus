@@ -12,30 +12,51 @@ const Auth = {
      */
     async login(email, contrasena) {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email, password: contrasena })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                return { success: false, error: errorData.message || 'Error de autenticación' };
+            const user = DataService.findOne('usuarios', u => u.email === email && u.contrasena === contrasena);
+            if (!user) {
+                return { success: false, error: 'Usuario o contraseña incorrectos.' };
             }
 
-            const data = await response.json();
+            // Mapeo inverso de roles para generar matriz de permisos
+            const roleMapRev = {
+                'administrador': 'admin',
+                'odontologo': 'doctor',
+                'recepcionista': 'receptionist',
+                'asistente_dental': 'assistant',
+                'almacenero': 'warehouse'
+            };
+            const backendRole = roleMapRev[user.rol] || user.rol;
 
-            // Guardar sesión y JWT
+            const isEscapedAdmin = backendRole === 'admin';
+            const isEscapedDoctor = backendRole === 'doctor';
+            const isEscapedRecep = backendRole === 'receptionist';
+            const isEscapedAsist = backendRole === 'assistant';
+            const isEscapedWarehouse = backendRole === 'warehouse';
+
+            // Matriz de permisos local equivalente al backend
+            const permissions = {
+                dashboard: { ver: true },
+                pacientes: {
+                    ver: isEscapedAdmin || isEscapedDoctor || isEscapedRecep || isEscapedAsist,
+                    crear: isEscapedAdmin || isEscapedRecep,
+                    editar: isEscapedAdmin || isEscapedDoctor,
+                    eliminar: isEscapedAdmin
+                },
+                agenda: { ver: isEscapedAdmin || isEscapedDoctor || isEscapedRecep || isEscapedAsist },
+                inventario: { ver: isEscapedAdmin || isEscapedWarehouse },
+                facturacion: { ver: isEscapedAdmin || isEscapedRecep },
+                reportes: { ver: !isEscapedWarehouse && !isEscapedAsist },
+                configuracion: { ver: isEscapedAdmin }
+            };
+
             const session = {
-                userId: data.user.userId,
-                nombre: data.user.nombre,
-                email: data.user.email,
-                rol: data.user.rol,
-                avatar: data.user.avatar || '',
-                token: data.token,
-                permissions: data.permissions,
+                userId: user.id,
+                nombre: user.nombreCompleto || `${user.nombre} ${user.apellido}`,
+                email: user.email,
+                rol: user.rol,
+                avatar: user.avatar || '',
+                token: 'mock-jwt-token-12345',
+                permissions: permissions,
                 loginTime: new Date().toISOString()
             };
 
@@ -43,7 +64,7 @@ const Auth = {
 
             return { success: true, user: session };
         } catch (error) {
-            return { success: false, error: 'Error al conectar con el servidor.' };
+            return { success: false, error: 'Error al iniciar sesión local.' };
         }
     },
 

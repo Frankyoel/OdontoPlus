@@ -1,55 +1,46 @@
-# OdontoPlus — Sistema de Gestión Clínica Integral
+# OdontoPlus — Sistema de Gestión Clínica Integral (Frontend Autónomo)
 
 ## Descripción General
-**OdontoPlus** es una aplicación diseñada para optimizar y centralizar la administración de centros odontológicos modernos. Resuelve la fragmentación de la información facilitando la gestión de la agenda de citas, el control detallado de historiales clínicos, la facturación integrada de tratamientos y el monitoreo de stocks en el almacén de insumos, todo adaptado a roles específicos con diferentes niveles de acceso.
+**OdontoPlus** es una aplicación diseñada para optimizar y centralizar la administración de centros odontológicos modernos. Esta rama (`frontend_limpio`) contiene una versión puramente de frontend que funciona de forma autónoma (sin depender de un servidor backend activo). Toda la persistencia de datos y control de accesos se realiza en el cliente utilizando almacenamiento local (`localStorage` / `sessionStorage`) y datos semilla cargados inicialmente.
+
+---
+
+## Estructura del Proyecto
+
+```text
+/
+├── frontend/
+│   ├── index.html          # Punto de entrada principal de la SPA
+│   ├── pages/              # Módulos/vistas (login.js, dashboard.js, patients.js, etc.)
+│   ├── components/         # Componentes gráficos reutilizables (modal, sidebar, etc.)
+│   └── assets/
+│       ├── css/            # Hojas de estilo de la aplicación (variables, base, layout, etc.)
+│       ├── js/             # Scripts núcleo (router, auth, permissions, theme, app)
+│       │   └── data/       # Capa de datos simulada (dataService, seedData, models)
+│       └── img/            # Recursos gráficos e imágenes
+│
+├── backend/                # Carpeta preparada para futura integración con la API REST
+└── README.md               # Este archivo de documentación
+```
 
 ---
 
 ## Requisitos Previos
-* **.NET 8.0 SDK** (instalado en el equipo local).
-* **Navegador Web Moderno** (Chrome, Firefox, Edge, etc.).
-* **Live Server** (extensión de VS Code) o cualquier servidor HTTP local simple para servir el frontend de manera estática.
+* **Navegador Web Moderno** (Chrome, Firefox, Edge, Safari, etc.).
+* **Live Server** (extensión de VS Code) o cualquier servidor web estático simple (como `http-server` de npm o `python -m http.server`) para servir la SPA.
 
 ---
 
 ## Instrucciones de Lanzamiento
 
-### 1. Iniciar el Backend (API REST)
-Abre una terminal en la raíz del proyecto y ejecuta los siguientes comandos:
-```bash
-# Navegar al directorio del backend
-cd backend
-
-# Restaurar paquetes NuGet
-dotnet restore
-
-# Aplicar migraciones para crear/actualizar la base de datos (requerido para crear la tabla de Odontogramas)
-dotnet ef database update
-
-# Ejecutar el servidor backend
-dotnet run
-```
-*El backend quedará escuchando por defecto en la dirección: **`http://localhost:5000`**.*
-
-### 1.1 Configurar el motor de Base de Datos (SQLite / SQL Server)
-El sistema soporta de manera híbrida **SQLite** y **SQL Server**. Para cambiar de motor:
-1. Abre [appsettings.json](file:///home/frankyoel/Documentos/OtrosProyectos/Pagina%20web-OdontoPlus/backend/appsettings.json).
-2. Modifica la propiedad `"DatabaseProvider"` a `"Sqlite"` o `"SqlServer"`.
-3. Ajusta la cadena de conexión correspondiente en `"ConnectionStrings"`.
-4. Si cambiaste a SQL Server, aplica la estructura ejecutando en la consola `/backend`:
-   ```bash
-   dotnet ef database update
-   ```
-
-### 2. Iniciar el Frontend (SPA)
-1. Abre la raíz del proyecto en tu editor de código preferido (como Visual Studio Code).
-2. Haz clic derecho sobre el archivo `index.html` y selecciona **Open with Live Server**.
-3. El frontend se abrirá automáticamente en tu navegador (usualmente en `http://127.0.0.1:5500` o similar).
+1. Abre el directorio del proyecto en tu editor de código de preferencia (ej. VS Code).
+2. Haz clic derecho sobre el archivo [frontend/index.html](file:///home/frankyoel/Documentos/OtrosProyectos/Pagina%20web-OdontoPlus/frontend/index.html) y selecciona **Open with Live Server**.
+3. La aplicación se abrirá en tu navegador web por defecto en la dirección `http://127.0.0.1:5500/frontend/` (o el puerto configurado).
 
 ---
 
 ## Cuentas de Demostración (Seed Data)
-El backend inicializa automáticamente las siguientes 5 cuentas con roles distintos al primer arranque del servidor:
+El frontend inicializa automáticamente los datos de prueba y las siguientes cuentas de demostración al cargar por primera vez la aplicación en el navegador:
 
 | Rol | Correo Electrónico | Contraseña | Nivel de Acceso |
 | :--- | :--- | :--- | :--- |
