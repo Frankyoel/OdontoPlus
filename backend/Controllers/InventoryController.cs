@@ -9,7 +9,7 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/inventario")]
     [Authorize(Roles = "admin, warehouse")] // Según roles en DOCUMENTACION.txt
     public class InventoryController : ControllerBase
     {

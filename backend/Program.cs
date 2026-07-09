@@ -9,25 +9,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configuración de la Base de Datos (SQLite o SQL Server según appsettings.json)
-var dbProvider = builder.Configuration["DatabaseProvider"] ?? "Sqlite";
+// Configuración de la Base de Datos (MySQL con Pomelo)
+var mySqlConnection = builder.Configuration.GetConnectionString("MySqlConnection")
+    ?? throw new InvalidOperationException("La cadena de conexión 'MySqlConnection' no está configurada.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    if (dbProvider.Equals("SqlServer", StringComparison.OrdinalIgnoreCase))
-    {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
-    }
-    else
-    {
-        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
-    }
-});
+    options.UseMySql(
+        mySqlConnection,
+        new MySqlServerVersion(new Version(8, 0, 0))
+    )
+);
 
 // Configuración de Identity con políticas de contraseña relajadas para permitir credenciales demo
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

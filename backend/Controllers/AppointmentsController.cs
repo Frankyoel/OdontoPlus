@@ -9,7 +9,7 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/citas")]
     [Authorize(Roles = "admin, doctor, receptionist, assistant")]
     public class AppointmentsController : ControllerBase
     {
@@ -27,7 +27,15 @@ namespace backend.Controllers
             return Ok(citas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("today")]
+        public async Task<ActionResult<IEnumerable<Cita>>> GetTodayAppointments()
+        {
+            var today = DateTime.Today;
+            var citas = await _unitOfWork.Citas.FindAsync(c => c.Fecha.Date == today);
+            return Ok(citas);
+        }
+
+        [HttpGet("{id:guid}")]
         public async Task<ActionResult<Cita>> GetAppointment(Guid id)
         {
             var cita = await _unitOfWork.Citas.GetByIdAsync(id);

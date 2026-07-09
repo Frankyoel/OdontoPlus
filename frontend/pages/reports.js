@@ -8,7 +8,7 @@ window.Modules.Reports = {
     render() {
         const container = document.getElementById('app-content');
         const reportType = Permissions.getReportType(); // 'todos', 'clinicos', 'atenciones', 'inventario'
-        
+
         container.innerHTML = `
             <div class="app">
                 ${Sidebar.render()}
@@ -87,12 +87,12 @@ window.Modules.Reports = {
                             height: 250,
                             color: 'var(--color-primary)',
                             data: [
-                                { label: 'Ene', value: 15400, format: v => Models.formatMoney(v) },
-                                { label: 'Feb', value: 18200, format: v => Models.formatMoney(v) },
-                                { label: 'Mar', value: 16500, format: v => Models.formatMoney(v) },
-                                { label: 'Abr', value: 21000, format: v => Models.formatMoney(v) },
-                                { label: 'May', value: 24500, format: v => Models.formatMoney(v) },
-                                { label: 'Jun', value: 14200, format: v => Models.formatMoney(v), active: true }
+                                { label: 'Ene', value: 15400, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
+                                { label: 'Feb', value: 18200, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
+                                { label: 'Mar', value: 16500, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
+                                { label: 'Abr', value: 21000, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
+                                { label: 'May', value: 24500, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
+                                { label: 'Jun', value: 14200, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`, active: true }
                             ]
                         });
                     }
@@ -118,11 +118,11 @@ window.Modules.Reports = {
                     <div class="col-span-4 flex-col gap-sm">
                         <div class="glass-card p-md" style="border-left: 4px solid var(--color-success);">
                             <p class="text-label-md text-muted mb-xs">Ingresos Proyectados (Mes)</p>
-                            <h3 class="text-headline-md text-success">${Models.formatMoney(28000)}</h3>
+                            <h3 class="text-headline-md text-success">${`S/ ${Number(28000).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}</h3>
                         </div>
                         <div class="glass-card p-md" style="border-left: 4px solid var(--color-warning);">
                             <p class="text-label-md text-muted mb-xs">Cuentas por Cobrar</p>
-                            <h3 class="text-headline-md">${Models.formatMoney(3200)}</h3>
+                            <h3 class="text-headline-md">${`S/ ${Number(3200).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`}</h3>
                         </div>
                         <div class="glass-card p-md flex-1">
                             <h4 class="text-label-md text-muted mb-sm">Servicios Más Rentables</h4>
@@ -190,19 +190,19 @@ window.Modules.Reports = {
                         <div class="glass-card p-lg h-full">
                             <h3 class="text-headline-sm mb-md">Consumo de Insumos (Top 5)</h3>
                             ${TableComponent.render({
-                                id: 'table-consumo',
-                                columns: [
-                                    { label: 'Artículo', field: 'nombre' },
-                                    { label: 'Unidades Usadas (Mes)', field: 'uso', render: v => `<b>${v}</b>` }
-                                ],
-                                data: [
-                                    { nombre: 'Anestesia Local (Cajas)', uso: 12 },
-                                    { nombre: 'Guantes de Nitrilo (Cajas)', uso: 8 },
-                                    { nombre: 'Mascarillas N95 (Cajas)', uso: 5 },
-                                    { nombre: 'Resina Compuesta (Unid)', uso: 4 },
-                                    { nombre: 'Alginato (Kg)', uso: 2 }
-                                ]
-                            })}
+                id: 'table-consumo',
+                columns: [
+                    { label: 'Artículo', field: 'nombre' },
+                    { label: 'Unidades Usadas (Mes)', field: 'uso', render: v => `<b>${v}</b>` }
+                ],
+                data: [
+                    { nombre: 'Anestesia Local (Cajas)', uso: 12 },
+                    { nombre: 'Guantes de Nitrilo (Cajas)', uso: 8 },
+                    { nombre: 'Mascarillas N95 (Cajas)', uso: 5 },
+                    { nombre: 'Resina Compuesta (Unid)', uso: 4 },
+                    { nombre: 'Alginato (Kg)', uso: 2 }
+                ]
+            })}
                         </div>
                     </div>
                     <div class="col-span-6">

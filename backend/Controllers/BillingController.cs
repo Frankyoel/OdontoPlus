@@ -9,7 +9,7 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/facturas")]
     [Authorize(Roles = "admin, receptionist")] // Según DOCUMENTACION.txt
     public class BillingController : ControllerBase
     {

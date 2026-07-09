@@ -9,8 +9,14 @@ const Sidebar = {
         const modules = Permissions.getAccessibleModules();
         const user = Auth.getSession();
         const initials = Auth.getCurrentUserInitials();
-        const rolLabel = Models.ROLES[user?.rol] || '';
-
+        const rolesMap = {
+            'admin': 'Administrador',
+            'doctor': 'Odontólogo',
+            'receptionist': 'Recepcionista',
+            'assistant': 'Asistente Dental',
+            'warehouse': 'Almacén'
+        };
+        const rolLabel = rolesMap[user?.rol] || 'Usuario';
         return `
             <aside class="sidebar" id="sidebar">
                 <!-- Brand -->

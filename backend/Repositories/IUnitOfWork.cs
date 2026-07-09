@@ -7,6 +7,7 @@ namespace backend.Repositories
         IRepository<Models.Paciente> Pacientes { get; }
         IRepository<Models.Cita> Citas { get; }
         IRepository<Models.ArticuloInventario> Inventario { get; }
+        IRepository<Models.Proveedor> Proveedores { get; }
         IRepository<Models.HistorialClinico> HistorialesClinicos { get; }
         IRepository<Models.Factura> Facturas { get; }
         IRepository<Models.RecetaMedica> RecetasMedicas { get; }

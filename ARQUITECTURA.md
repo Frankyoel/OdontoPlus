@@ -6,7 +6,7 @@ Este documento detalla el diseño de software, patrones arquitectónicos, flujo 
 
 ## 1. Estructura del Proyecto (Backend)
 
-El backend está desarrollado bajo la plataforma **ASP.NET Core Web API 8.0** utilizando una arquitectura organizada por responsabilidades:
+El backend está desarrollado bajo la plataforma **ASP.NET Core Web API 10.0** utilizando una arquitectura organizada por responsabilidades:
 
 ```text
 backend/
@@ -21,12 +21,12 @@ backend/
 ### Contenido de las carpetas:
 * **Models:** Define la estructura de datos física de la aplicación (`Paciente`, `Odontograma`, `Cita`, `ArticuloInventario`, etc.) y extiende `IdentityUser` para el manejo de credenciales de usuario.
 * **Repositories:** Contiene las interfaces y clases genéricas para desacoplar el motor de base de datos de la lógica del negocio. Se ha extendido con `FindWithIncludesAsync` para permitir eager loading dinámico de colecciones (como medicamentos de una receta).
-* **Controllers:** Expone los endpoints RESTful protegidos por roles mediante políticas de autorización nativas, incluyendo controladores especializados como `PatientsController`, `OdontogramaController`, `ClinicalHistoryController` y `PrescriptionsController` con soporte para consultas filtradas por paciente.
+* **Controllers:** Expone los endpoints RESTful protegidos por roles mediante políticas de autorización nativas, incluyendo controladores especializados como `PatientsController`, `AppointmentsController`, `ClinicalHistoryController`, `PrescriptionsController`, `InventoryController` y `BillingController`.
 * **Strategies:** Encapsula el cálculo de permisos en tiempo de ejecución para cada tipo de rol.
 * **Services:** Configura servicios compartidos persistentes en toda la aplicación.
 
-### Persistencia Híbrida (SQLite y SQL Server)
-La aplicación cuenta con configuración dinámica para bases de datos. El proveedor se resuelve en el arranque mediante el parámetro `"DatabaseProvider"` definido en `appsettings.json`. De esta manera, el sistema es compatible tanto con un entorno de desarrollo ágil basado en **SQLite** como con una base de datos de producción empresarial basada en **SQL Server (MS SQL)** sin alterar el código fuente.
+### Motor de Base de Datos (MySQL)
+La aplicación utiliza **MySQL** exclusivamente a través del paquete `Pomelo.EntityFrameworkCore.MySql`. Todo el modelo de Identity y la lógica propia clínica está estructurado de manera centralizada en un esquema transaccional, eliminando la base SQLite original. Esto provee un entorno sólido y concurrente, adecuado para despliegues de producción y ambientes clínicos con alta carga.
 
 ---
 
@@ -63,16 +63,16 @@ sequenceDiagram
 ```
 
 1. **SPA envía credenciales:** El frontend captura el email/contraseña y hace un `POST` asíncrono a `/api/auth/login`.
-2. **Validación:** El `AuthController` delega la comprobación a `SignInManager` de Identity y recupera el rol de la base de datos SQLite.
+2. **Validación:** El `AuthController` delega la comprobación a `SignInManager` de Identity y recupera el rol de la base de datos MySQL.
 3. **Resolución de la Estrategia:** Se evalúa el rol del usuario contra `RolePermissionStrategy` para calcular qué secciones de la aplicación (`pacientes`, `agenda`, `inventario`, `facturacion`) puede ver, crear, editar o eliminar.
 4. **Token y Respuesta:** Se genera un JWT firmado con expiración de 7 días. El servidor responde con el Token, la información básica del usuario y el mapa de permisos resultante.
-5. **Guardado en Cliente:** La SPA guarda este objeto en `sessionStorage` para mantener la sesión y renderizar dinámicamente el panel lateral (sidebar).
+5. **Guardado en Cliente:** La SPA guarda este objeto en `sessionStorage` para mantener la sesión segura por pestaña, y luego renderizar dinámicamente el panel.
 
 ---
 
 ## 4. Conexión Frontend-Backend (Consumo de la API)
 
-* **Migración a API REST (Módulo Pacientes):** El módulo de Pacientes (`js/modules/patients.js`) ha sido completamente migrado para consumir la API REST del backend de forma directa y asíncrona, eliminando por completo su dependencia de `DataService`/`localStorage`.
+* **SPA 100% En Línea:** Todo el frontend web funciona estrictamente conectado al backend. El sistema anterior offline basado en `localStorage` fue purgado. Cada vez que el usuario navega, se interactúa con el `ApiClient` para traer los datos asíncronamente.
 * **Fetch API:** El frontend de Vanilla JS realiza llamadas HTTP a `http://localhost:5000/api/...` mediante funciones asíncronas (`async/await`) y helpers personalizados de conexión con manejo centralizado de errores.
 * **Bearer Token:** Para toda petición a recursos protegidos (ej. obtener lista de pacientes), el cliente extrae el token del `sessionStorage` e inyecta la cabecera de autenticación correspondiente:
   ```javascript

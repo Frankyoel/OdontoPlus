@@ -9,7 +9,7 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/pacientes")]
     // Autorización requerida. Roles permitidos (según permissions.js): Admin, Doctor, Receptionist, Assistant
     [Authorize(Roles = "admin, doctor, receptionist, assistant")]
     public class PatientsController : ControllerBase
@@ -47,6 +47,11 @@ namespace backend.Controllers
         [Authorize(Roles = "admin, receptionist")]
         public async Task<ActionResult<Paciente>> CreatePatient([FromBody] Paciente patient)
         {
+            if (string.IsNullOrEmpty(patient.Codigo))
+            {
+                patient.Codigo = "PAC-" + DateTime.Now.ToString("yyMMdd") + "-" + new Random().Next(100, 999);
+            }
+
             await _unitOfWork.Pacientes.AddAsync(patient);
             await _unitOfWork.CompleteAsync();
             
