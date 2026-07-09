@@ -64,37 +64,13 @@ window.Modules.Reports = {
             setTimeout(() => {
                 const chartAtenciones = document.getElementById('chart-atenciones');
                 if (chartAtenciones) {
-                    chartAtenciones.innerHTML = Charts.barChart({
-                        id: 'bar-atenciones',
-                        height: 250,
-                        color: 'var(--color-tertiary)',
-                        data: [
-                            { label: 'Ene', value: 120 },
-                            { label: 'Feb', value: 145 },
-                            { label: 'Mar', value: 130 },
-                            { label: 'Abr', value: 160 },
-                            { label: 'May', value: 185 },
-                            { label: 'Jun', value: 110, active: true } // Mes actual simulado
-                        ]
-                    });
+                    chartAtenciones.innerHTML = `<div class="flex items-center justify-center h-full"><p class="text-muted text-body-sm">Gráfica en construcción (Faltan datos de atenciones pasadas)</p></div>`;
                 }
 
                 if (reportType === 'todos') {
                     const chartIngresos = document.getElementById('chart-ingresos-mensual');
                     if (chartIngresos) {
-                        chartIngresos.innerHTML = Charts.barChart({
-                            id: 'bar-ingresos',
-                            height: 250,
-                            color: 'var(--color-primary)',
-                            data: [
-                                { label: 'Ene', value: 15400, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
-                                { label: 'Feb', value: 18200, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
-                                { label: 'Mar', value: 16500, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
-                                { label: 'Abr', value: 21000, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
-                                { label: 'May', value: 24500, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}` },
-                                { label: 'Jun', value: 14200, format: v => `S/ ${Number(v).toLocaleString('es-PE', { minimumFractionDigits: 2 })}`, active: true }
-                            ]
-                        });
+                        chartIngresos.innerHTML = `<div class="flex items-center justify-center h-full"><p class="text-muted text-body-sm">Gráfica en construcción (Faltan cierres de caja)</p></div>`;
                     }
                 }
             }, 100);
@@ -158,23 +134,15 @@ window.Modules.Reports = {
                     <div class="col-span-4 flex-col gap-sm">
                         <div class="glass-card p-md">
                             <h4 class="text-label-md text-muted mb-sm">Tasa de Asistencia</h4>
-                            <div class="flex items-center gap-md">
-                                <div style="position: relative; width: 64px; height: 64px; border-radius: 50%; border: 8px solid var(--color-success); border-right-color: var(--color-surface-container);">
-                                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">85%</div>
-                                </div>
-                                <div>
-                                    <p class="text-body-sm text-success font-semibold">85% Asistieron</p>
-                                    <p class="text-body-sm text-error">15% Cancelaron/Faltaron</p>
-                                </div>
+                            <div class="flex items-center justify-center p-md">
+                                <p class="text-body-sm text-muted text-center"><i>(Se requiere un mínimo de 30 días de historial para calcular esta métrica)</i></p>
                             </div>
                         </div>
                         <div class="glass-card p-md flex-1">
                             <h4 class="text-label-md text-muted mb-sm">Tratamientos Frecuentes</h4>
-                            <ul class="text-body-sm flex-col gap-xs">
-                                <li>1. Limpieza Dental (30%)</li>
-                                <li>2. Restauración de Resina (25%)</li>
-                                <li>3. Consultas Generales (20%)</li>
-                            </ul>
+                            <div class="flex items-center justify-center p-md">
+                                <p class="text-body-sm text-muted text-center"><i>(Sin datos suficientes para procesar estadísticas clínicas)</i></p>
+                            </div>
                         </div>
                     </div>
                 </div>

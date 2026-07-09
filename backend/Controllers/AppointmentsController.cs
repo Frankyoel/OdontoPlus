@@ -23,7 +23,7 @@ namespace backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cita>>> GetAppointments()
         {
-            var citas = await _unitOfWork.Citas.GetAllAsync();
+            var citas = await _unitOfWork.Citas.GetAllWithIncludesAsync(c => c.Paciente, c => c.Odontologo);
             return Ok(citas);
         }
 
@@ -31,7 +31,7 @@ namespace backend.Controllers
         public async Task<ActionResult<IEnumerable<Cita>>> GetTodayAppointments()
         {
             var today = DateTime.Today;
-            var citas = await _unitOfWork.Citas.FindAsync(c => c.Fecha.Date == today);
+            var citas = await _unitOfWork.Citas.FindWithIncludesAsync(c => c.Fecha.Date == today, c => c.Paciente, c => c.Odontologo);
             return Ok(citas);
         }
 

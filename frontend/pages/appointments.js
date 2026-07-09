@@ -79,6 +79,11 @@ window.Modules.Appointments = {
 
             const wrapper = document.getElementById('appointments-table-wrapper');
             if (wrapper) {
+                displayCitas = displayCitas.map(c => {
+                    const pac = c.paciente ? `${c.paciente.nombre} ${c.paciente.apellido}` : 'Sin Asignar';
+                    const doc = c.odontologo ? c.odontologo.userName.split('@')[0] : 'Sin Asignar';
+                    return { ...c, pacienteNombre: pac, odontologoNombre: doc };
+                });
                 // sort by date asc, time asc
                 displayCitas.sort((a, b) => (a.fecha.split('T')[0] + a.horaInicio).localeCompare(b.fecha.split('T')[0] + b.horaInicio));
                 wrapper.innerHTML = TableComponent.render({

@@ -9,7 +9,7 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/recetas")]
     [Authorize(Roles = "admin, doctor")]
     public class PrescriptionsController : ControllerBase
     {
@@ -21,10 +21,15 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RecetaMedica>>> GetPrescriptions()
+        public async Task<ActionResult<IEnumerable<RecetaMedica>>> GetPrescriptions([FromQuery] Guid? pacienteId)
         {
-            var recetas = await _unitOfWork.RecetasMedicas.GetAllAsync();
-            return Ok(recetas);
+            if (pacienteId.HasValue)
+            {
+                var recetas = await _unitOfWork.RecetasMedicas.FindAsync(r => r.PacienteId == pacienteId.Value);
+                return Ok(recetas);
+            }
+            var todas = await _unitOfWork.RecetasMedicas.GetAllAsync();
+            return Ok(todas);
         }
 
         [HttpGet("{id}")]

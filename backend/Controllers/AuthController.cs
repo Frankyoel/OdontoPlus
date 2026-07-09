@@ -65,7 +65,8 @@ namespace backend.Controllers
             var permissionContext = new RolePermissionContext(strategy);
             var permissions = new
             {
-                dashboard = new { ver = true },  // El dashboard es siempre accesible para usuarios autenticados
+                // El dashboard es siempre accesible para usuarios autenticados
+                dashboard = new { ver = true }, 
                 pacientes = new
                 {
                     ver = permissionContext.CanAccess("patients"),

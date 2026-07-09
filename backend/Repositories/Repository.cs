@@ -31,6 +31,16 @@ namespace backend.Repositories
             return await dbSet.ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsync(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = dbSet;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
+        }
+
         // Obtiene un único registro por su identificador único (ID).
         public async Task<T?> GetByIdAsync(Guid id)
         {
@@ -41,6 +51,16 @@ namespace backend.Repositories
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
             return await dbSet.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> FindWithIncludesAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = dbSet;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.Where(predicate).ToListAsync();
         }
 
         // Registra una nueva entidad en el contexto de base de datos de manera asíncrona.

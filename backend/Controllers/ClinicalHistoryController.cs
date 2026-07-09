@@ -9,8 +9,8 @@ using backend.Repositories;
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Roles = "admin, doctor")] // Solo administradores y doctores
+    [Route("api/historial")]
+    [Authorize(Roles = "admin, doctor")]
     public class ClinicalHistoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,10 +21,15 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HistorialClinico>>> GetHistories()
+        public async Task<ActionResult<IEnumerable<HistorialClinico>>> GetHistories([FromQuery] Guid? pacienteId)
         {
-            var historiales = await _unitOfWork.HistorialesClinicos.GetAllAsync();
-            return Ok(historiales);
+            if (pacienteId.HasValue)
+            {
+                var historiales = await _unitOfWork.HistorialesClinicos.FindAsync(h => h.PacienteId == pacienteId.Value);
+                return Ok(historiales);
+            }
+            var todos = await _unitOfWork.HistorialesClinicos.GetAllAsync();
+            return Ok(todos);
         }
 
         [HttpGet("{id}")]

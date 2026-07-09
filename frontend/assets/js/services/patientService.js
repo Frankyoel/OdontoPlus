@@ -20,10 +20,10 @@ const PatientService = {
         return ApiClient.put(`/api/pacientes/${id}`, { activo });
     },
     getHistorial(id) {
-        return ApiClient.get(`/api/pacientes/${id}/historial`);
+        return ApiClient.get(`/api/historial?pacienteId=${id}`);
     },
     addHistorial(id, data) {
-        return ApiClient.post(`/api/pacientes/${id}/historial`, data);
+        return ApiClient.post(`/api/historial`, { ...data, pacienteId: id });
     },
     getRecetas(id) {
         return ApiClient.get(`/api/recetas?pacienteId=${id}`);

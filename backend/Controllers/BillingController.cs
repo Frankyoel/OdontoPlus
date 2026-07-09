@@ -10,7 +10,7 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/facturas")]
-    [Authorize(Roles = "admin, receptionist")] // Según DOCUMENTACION.txt
+    [Authorize(Roles = "admin, receptionist")] 
     public class BillingController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
