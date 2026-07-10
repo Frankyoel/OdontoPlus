@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using backend.Models;
+using backend.Services;
 using backend.Strategies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -51,34 +53,58 @@ namespace backend.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.Count > 0 ? roles[0] : "";
 
-            // Determinar estrategia de permisos (Patrón Strategy)
-            IRolePermissionStrategy strategy = role switch
-            {
-                "admin" => new AdminPermissionStrategy(),
-                "doctor" => new DoctorPermissionStrategy(),
-                "receptionist" => new ReceptionistPermissionStrategy(),
-                "assistant" => new AssistantPermissionStrategy(),
-                "warehouse" => new WarehousePermissionStrategy(),
-                _ => throw new Exception("Rol desconocido")
-            };
+            // Obtener permisos granulares usando el Patrón Strategy via PermissionService
+            var permissionsList = PermissionService.GetPermissionsForRole(role);
 
-            var permissionContext = new RolePermissionContext(strategy);
+            // Objeto de permisos legacy — mantiene compatibilidad con el frontend existente
+            // (canAccess, canCreate, canEdit, canDelete por módulo)
             var permissions = new
             {
-                // El dashboard es siempre accesible para usuarios autenticados
-                dashboard = new { ver = true }, 
-                pacientes = new
+                dashboard   = new { ver = true },
+                pacientes   = new
                 {
-                    ver = permissionContext.CanAccess("patients"),
-                    crear = strategy is AdminPermissionStrategy || strategy is ReceptionistPermissionStrategy,
-                    editar = strategy is AdminPermissionStrategy || strategy is DoctorPermissionStrategy,
-                    eliminar = strategy is AdminPermissionStrategy
+                    ver      = permissionsList.Contains(SystemPermissions.Patients.View),
+                    crear    = permissionsList.Contains(SystemPermissions.Patients.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.Patients.Edit),
+                    eliminar = permissionsList.Contains(SystemPermissions.Patients.Delete)
                 },
-                agenda = new { ver = permissionContext.CanAccess("appointments") },
-                inventario = new { ver = permissionContext.CanAccess("inventory") },
-                facturacion = new { ver = permissionContext.CanAccess("billing") },
-                reportes = new { ver = strategy is not WarehousePermissionStrategy && strategy is not AssistantPermissionStrategy },
-                configuracion = new { ver = strategy is AdminPermissionStrategy }
+                agenda      = new
+                {
+                    ver      = permissionsList.Contains(SystemPermissions.Appointments.View),
+                    crear    = permissionsList.Contains(SystemPermissions.Appointments.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.Appointments.Edit),
+                    eliminar = permissionsList.Contains(SystemPermissions.Appointments.Cancel)
+                },
+                inventario  = new
+                {
+                    ver      = permissionsList.Contains(SystemPermissions.Inventory.View),
+                    crear    = permissionsList.Contains(SystemPermissions.Inventory.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.Inventory.Edit),
+                    eliminar = permissionsList.Contains(SystemPermissions.Inventory.Delete)
+                },
+                facturacion = new
+                {
+                    ver      = permissionsList.Contains(SystemPermissions.Billing.View),
+                    crear    = permissionsList.Contains(SystemPermissions.Billing.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.Billing.Edit),
+                    eliminar = permissionsList.Contains(SystemPermissions.Billing.Cancel)
+                },
+                historial   = new
+                {
+                    ver      = permissionsList.Contains(SystemPermissions.ClinicalHistory.View),
+                    crear    = permissionsList.Contains(SystemPermissions.ClinicalHistory.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.ClinicalHistory.Edit),
+                    eliminar = false
+                },
+                recetas     = new
+                {
+                    ver      = permissionsList.Contains(SystemPermissions.Prescriptions.View),
+                    crear    = permissionsList.Contains(SystemPermissions.Prescriptions.Create),
+                    editar   = permissionsList.Contains(SystemPermissions.Prescriptions.Edit),
+                    eliminar = false
+                },
+                reportes      = new { ver = permissionsList.Contains(SystemPermissions.Reports.View) },
+                configuracion = new { ver = permissionsList.Contains(SystemPermissions.Settings.Manage) }
             };
 
             var token = GenerateJwtToken(user, role);
@@ -90,10 +116,11 @@ namespace backend.Controllers
                 {
                     userId = user.Id,
                     nombre = user.UserName,
-                    email = user.Email,
-                    rol = role
+                    email  = user.Email,
+                    rol    = role
                 },
-                permissions
+                permissions,                          // Objeto legacy — compatibilidad frontend actual
+                permissionsList = permissionsList     // Nuevo: array granular ["Patients.View", ...]
             });
         }
 

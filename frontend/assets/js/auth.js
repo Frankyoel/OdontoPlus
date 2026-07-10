@@ -15,25 +15,35 @@ const Auth = {
             const data = await ApiClient.post('/api/auth/login', { email, password: contrasena });
 
             const session = {
-                userId: data.user?.userId,
-                nombre: data.user?.nombre,
-                email: data.user?.email,
-                rol: data.user?.rol,
-                avatar: data.user?.avatar || '',
-                token: data.token,
-                permissions: data.permissions,
-                loginTime: new Date().toISOString()
+                userId:          data.user?.userId,
+                nombre:          data.user?.nombre,
+                email:           data.user?.email,
+                rol:             data.user?.rol,
+                avatar:          data.user?.avatar || '',
+                token:           data.token,
+                permissions:     data.permissions,      // Objeto legacy { pacientes: { ver, crear... } }
+                permissionsList: data.permissionsList || [], // Array granular ["Patients.View", ...]
+                loginTime:       new Date().toISOString()
             };
 
             sessionStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
             return { success: true, user: session };
 
         } catch (err) {
-            // ApiClient ya mostró Toast si fue 401/403/500/red.
-            // Para credenciales inválidas el backend devuelve 400 o 401.
             const msg = err.data?.message || err.message || 'Error al iniciar sesión.';
             return { success: false, error: msg };
         }
+    },
+
+    /**
+     * Verifica si el usuario tiene un permiso granular específico.
+     * Usa el array "permissionsList" devuelto por el backend en el login.
+     * Ejemplo: Auth.hasPermission('Patients.Create')
+     */
+    hasPermission(permission) {
+        const session = this.getSession();
+        if (!session || !Array.isArray(session.permissionsList)) return false;
+        return session.permissionsList.includes(permission);
     },
 
     /** Cierra la sesión activa eliminando el token del session storage */

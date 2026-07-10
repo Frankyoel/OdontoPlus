@@ -555,9 +555,13 @@
     .col-span-4 { grid-column: span 12; }
     .col-span-6 { grid-column: span 12; }
     .col-span-3 { grid-column: span 6; }
+}
 
+/* ── Mobile (max-width: 768px) ── */
+@media (max-width: 768px) {
     .login-layout {
         flex-direction: column;
+        height: 100vh;
         overflow-y: auto;
     }
 
@@ -572,10 +576,7 @@
         padding: var(--space-lg);
         min-height: 300px;
     }
-}
 
-/* ── Mobile (max-width: 768px) ── */
-@media (max-width: 768px) {
     .grid-cols-12 {
         grid-template-columns: 1fr;
     }

@@ -10,7 +10,7 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/historial")]
-    [Authorize(Roles = "admin, doctor")]
+    [Authorize(Roles = "admin, doctor, receptionist, assistant")]
     public class ClinicalHistoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -41,6 +41,7 @@ namespace backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, doctor")]
         public async Task<ActionResult<HistorialClinico>> CreateHistory([FromBody] HistorialClinico historial)
         {
             await _unitOfWork.HistorialesClinicos.AddAsync(historial);
@@ -49,6 +50,7 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin, doctor")]
         public async Task<IActionResult> UpdateHistory(Guid id, [FromBody] HistorialClinico historial)
         {
             if (id != historial.Id) return BadRequest();

@@ -1,6 +1,14 @@
 /* ============================================================
    OdontoPlus — Permisos (permissions.js)
-   Control de acceso por rol gestionado dinámicamente desde el Backend
+   Control de acceso por rol gestionado dinámicamente desde el Backend.
+
+   API disponible:
+     - Permissions.canAccess(modulo)       → usa objeto legacy { ver }
+     - Permissions.canCreate(modulo)       → usa objeto legacy { crear }
+     - Permissions.canEdit(modulo)         → usa objeto legacy { editar }
+     - Permissions.canDelete(modulo)       → usa objeto legacy { eliminar }
+     - Permissions.hasPermission(perm)     → alias de Auth.hasPermission()
+     - Auth.hasPermission('Patients.View') → usa array granular permissionsList
    ============================================================ */
 
 const Permissions = {
@@ -9,6 +17,8 @@ const Permissions = {
         const session = Auth.getSession();
         return session ? session.permissions : null;
     },
+
+    // ─── API Legacy — compatible con toda la interfaz existente ───────────────
 
     /** Verifica si el rol actual puede acceder a un módulo */
     canAccess(modulo) {
@@ -38,22 +48,34 @@ const Permissions = {
         return perms[modulo]?.eliminar === true;
     },
 
+    // ─── API Nueva — permisos granulares ─────────────────────────────────────
+
+    /**
+     * Alias de Auth.hasPermission(). Verifica un permiso granular por string.
+     * Ejemplo: Permissions.hasPermission('Patients.Create')
+     */
+    hasPermission(permission) {
+        return Auth.hasPermission(permission);
+    },
+
+    // ─── Helpers de tipo ─────────────────────────────────────────────────────
+
     /** Obtiene el tipo de dashboard para el rol actual */
     getDashboardType() {
-        // Lógica de fallback para visualización frontend, o puedes extender el backend
         const rol = Auth.getCurrentRole();
-        if (rol === 'admin') return 'completo';
-        if (rol === 'doctor' || rol === 'assistant') return 'clinico';
-        if (rol === 'warehouse') return 'inventario';
+        if (rol === 'admin')                return 'completo';
+        if (rol === 'doctor')               return 'clinico';
+        if (rol === 'warehouse')            return 'inventario';
+        if (rol === 'receptionist' || rol === 'assistant') return 'limitado';
         return 'limitado';
     },
 
     /** Obtiene el tipo de reportes para el rol actual */
     getReportType() {
         const rol = Auth.getCurrentRole();
-        if (rol === 'admin') return 'todos';
-        if (rol === 'doctor') return 'clinicos';
-        if (rol === 'warehouse') return 'inventario';
+        if (rol === 'admin')        return 'todos';
+        if (rol === 'doctor')       return 'clinicos';
+        if (rol === 'warehouse')    return 'inventario';
         if (rol === 'receptionist') return 'atenciones';
         return null;
     },
@@ -64,25 +86,17 @@ const Permissions = {
         if (!perms) return [];
 
         const allModules = [
-            { id: 'dashboard', label: 'Inicio', icon: 'dashboard', route: '#/dashboard' },
-            { id: 'pacientes', label: 'Pacientes', icon: 'person', route: '#/pacientes' },
-            { id: 'agenda', label: 'Agenda', icon: 'calendar_month', route: '#/agenda' },
-            { id: 'inventario', label: 'Inventario', icon: 'inventory_2', route: '#/inventario' },
-            { id: 'facturacion', label: 'Facturación', icon: 'payments', route: '#/facturacion' },
-            { id: 'reportes', label: 'Reportes', icon: 'analytics', route: '#/reportes' },
-            { id: 'configuracion', label: 'Configuración', icon: 'settings', route: '#/configuracion' }
+            { id: 'dashboard',     label: 'Inicio',        icon: 'dashboard',    route: '#/dashboard' },
+            { id: 'pacientes',     label: 'Pacientes',     icon: 'person',       route: '#/pacientes' },
+            { id: 'agenda',        label: 'Agenda',        icon: 'calendar_month', route: '#/agenda' },
+            { id: 'inventario',    label: 'Inventario',    icon: 'inventory_2',  route: '#/inventario' },
+            { id: 'facturacion',   label: 'Facturación',   icon: 'payments',     route: '#/facturacion' },
+            { id: 'reportes',      label: 'Reportes',      icon: 'analytics',    route: '#/reportes' },
+            { id: 'configuracion', label: 'Configuración', icon: 'settings',     route: '#/configuracion' }
         ];
 
-        // Filtramos usando la matriz generada por el backend en `Auth.login`
-        // Nota: reportes y configuracion podrían añadirse a la estrategia del backend en el futuro.
-        return allModules.filter(m => {
-            if (m.id === 'reportes' || m.id === 'configuracion') {
-                const rol = Auth.getCurrentRole();
-                if (m.id === 'reportes') return ['admin', 'doctor', 'receptionist', 'warehouse'].includes(rol);
-                if (m.id === 'configuracion') return rol === 'admin';
-            }
-            return this.canAccess(m.id);
-        });
+        // Filtra los módulos usando el objeto de permisos legacy (que ahora viene del PermissionService)
+        return allModules.filter(m => this.canAccess(m.id));
     }
 };
 

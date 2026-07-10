@@ -200,7 +200,7 @@ window.Modules.Patients = {
                                     <p class="text-body-sm text-error font-semibold">${paciente.alergias}</p>
                                 </div>` : ''
             }
-                            </div ></div >
+                            </div></div>
     <div class="col-span-8">
         <div class="glass-card h-full flex-col" style="min-height:500px;">
             <div class="tabs">
@@ -214,10 +214,10 @@ window.Modules.Patients = {
             </div>
         </div>
     </div>
-                        </div >
-                    </div >
-                </main >
-            </div > `;
+                        </div>
+                    </div>
+                </main>
+            </div>`;
 
         setTimeout(() => {
             const firstTab = document.querySelector('.tab');
@@ -235,13 +235,13 @@ window.Modules.Patients = {
 
         if (tab === 'evolucion') {
             const canEdit = Permissions.canEdit('historial');
-            content.innerHTML = `< div class="flex justify-between items-center mb-lg" >
+            content.innerHTML = `<div class="flex justify-between items-center mb-lg">
     <h3 class="text-headline-sm">Historial de Tratamientos</h3>
                 ${canEdit ? `<button class="btn btn--secondary btn--sm" onclick="window.Modules.Patients.showAddHistorialModal('${pacienteId}')">
                     <span class="material-symbols-outlined" style="font-size:16px;">add</span> Agregar Registro
                 </button>` : ''
                 }
-            </div > <div class="timeline" id="historial-list"><span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">autorenew</span></div>`;
+            </div><div class="timeline" id="historial-list"><span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">autorenew</span></div>`;
             try {
                 const historial = await PatientService.getHistorial(pacienteId);
                 const list = document.getElementById('historial-list');
@@ -250,26 +250,26 @@ window.Modules.Patients = {
                     list.innerHTML = '<p class="text-body-sm text-muted">No hay registros en el historial clínico.</p>';
                 } else {
                     list.innerHTML = historial.map(h => `
-    < div class="timeline-item" >
+    <div class="timeline-item">
                             <div class="timeline-item__dot"></div>
                             <div class="mb-xs"><span class="text-label-md text-primary">${this._fmt.date(h.fecha)}</span></div>
                             <h4 class="text-headline-sm mb-xs">${h.descripcion}</h4>
                             ${h.diagnostico ? `<p class="text-body-sm mb-xs"><b>Dx:</b> ${h.diagnostico}</p>` : ''}
                             ${h.tratamiento ? `<p class="text-body-sm mb-sm">${h.tratamiento}</p>` : ''}
                             ${h.notas ? `<p class="text-body-sm text-muted"><i>Nota: ${h.notas}</i></p>` : ''}
-                        </div > `).join('');
+                        </div>`).join('');
                 }
             } catch (_) { }
 
         } else if (tab === 'recetas') {
             const canCreate = Permissions.canCreate('recetas');
-            content.innerHTML = `< div class="flex justify-between items-center mb-lg" >
+            content.innerHTML = `<div class="flex justify-between items-center mb-lg">
     <h3 class="text-headline-sm">Recetas Médicas</h3>
                 ${canCreate ? `<button class="btn btn--secondary btn--sm" onclick="window.Modules.Patients.showNewPrescriptionModal('${pacienteId}')">
                     <span class="material-symbols-outlined" style="font-size:16px;">receipt</span> Emitir Receta
                 </button>` : ''
                 }
-            </div > <div class="flex-col gap-md" id="recetas-list"><span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">autorenew</span></div>`;
+            </div><div class="flex-col gap-md" id="recetas-list"><span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">autorenew</span></div>`;
             try {
                 const recetas = await PatientService.getRecetas(pacienteId);
                 const list = document.getElementById('recetas-list');
@@ -278,14 +278,14 @@ window.Modules.Patients = {
                     list.innerHTML = '<p class="text-body-sm text-muted">No se han emitido recetas para este paciente.</p>';
                 } else {
                     list.innerHTML = recetas.map(r => `
-    < div class="glass-card p-md" >
+    <div class="glass-card p-md">
                             <div class="flex justify-between items-start mb-sm">
                                 <span class="font-mono text-primary font-semibold">${r.codigo}</span>
                                 <span class="chip chip--success">${r.firmada ? 'Firmada' : 'Pendiente'}</span>
                             </div>
                             <div class="text-body-sm mb-xs"><b>Fecha:</b> ${this._fmt.date(r.fecha)}</div>
                             ${r.indicaciones ? `<div class="text-body-sm text-muted"><b>Indicaciones:</b> ${r.indicaciones}</div>` : ''}
-                        </div > `).join('');
+                        </div>`).join('');
                 }
             } catch (_) { }
         }

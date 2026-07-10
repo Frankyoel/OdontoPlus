@@ -34,7 +34,7 @@ window.Modules.Login = {
                                     <label class="input-label" for="email">Correo Electrónico</label>
                                     <div class="input-icon-wrapper">
                                         <span class="material-symbols-outlined">mail</span>
-                                        <input type="email" id="email" class="input-field" placeholder="ejemplo@odontoplus.pe" required value="admin@odontoplus.pe">
+                                        <input type="email" id="email" class="input-field" placeholder="ejemplo@odontoplus.pe" required>
                                     </div>
                                 </div>
 
@@ -42,7 +42,7 @@ window.Modules.Login = {
                                     <label class="input-label" for="password">Contraseña</label>
                                     <div class="input-icon-wrapper">
                                         <span class="material-symbols-outlined">lock</span>
-                                        <input type="password" id="password" class="input-field" placeholder="••••••••" required value="admin123">
+                                        <input type="password" id="password" class="input-field" placeholder="••••••••" required>
                                     </div>
                                     <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
                                         <a href="#" class="text-label-md text-primary" style="text-decoration: underline;" onclick="Toast.info('Contacta al administrador del sistema para recuperar tu contraseña.')">¿Olvidaste tu contraseña?</a>
@@ -56,18 +56,6 @@ window.Modules.Login = {
                                 
                                 <div id="login-error" class="text-body-sm text-error text-center hidden"></div>
                             </form>
-                            
-                            <!-- Demo Accounts Quick Login -->
-                            <div style="margin-top: var(--space-xl); border-top: 1px solid var(--color-surface-variant); padding-top: var(--space-md);">
-                                <p class="text-label-md text-muted text-center mb-sm">Cuentas de demostración:</p>
-                                <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center;">
-                                    <button class="chip chip--outline" onclick="window.Modules.Login.fillDemo('admin@odontoplus.pe', 'admin123')">Administrador</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Login.fillDemo('dra.torres@odontoplus.pe', 'doctor123')">Odontólogo</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Login.fillDemo('lucia.paredes@odontoplus.pe', 'asistente123')">Asist. Dental</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Login.fillDemo('recepcion@odontoplus.pe', 'recepcion123')">Recepcionista</button>
-                                    <button class="chip chip--outline" onclick="window.Modules.Login.fillDemo('almacen@odontoplus.pe', 'almacen123')">Almacén</button>
-                                </div>
-                            </div>
                         </div>
                         
                         <p class="text-label-md text-muted text-center mt-xl">

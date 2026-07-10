@@ -1,7 +1,8 @@
 namespace backend.Strategies
 {
     /// <summary>
-    /// Interfaz que define la estrategia de permisos para un rol específico (Patrón Strategy).
+    /// [LEGACY] Interfaz original del Patrón Strategy para acceso binario por módulo.
+    /// Se mantiene por compatibilidad histórica. Para permisos granulares usar IPermissionStrategy.
     /// </summary>
     public interface IRolePermissionStrategy
     {
@@ -11,90 +12,80 @@ namespace backend.Strategies
         bool CanAccessBilling();
     }
 
-    /// <summary>
-    /// Estrategia concreta de permisos para el rol de Administrador (acceso total).
-    /// </summary>
-    public class AdminPermissionStrategy : IRolePermissionStrategy
+    // ─── Implementaciones legacy (renombradas para evitar colisión con las nuevas) ───
+
+    /// <summary>[LEGACY] Estrategia binaria para Administrador.</summary>
+    public class LegacyAdminPermissionStrategy : IRolePermissionStrategy
     {
-        public bool CanAccessPatients() => true;
+        public bool CanAccessPatients()     => true;
         public bool CanAccessAppointments() => true;
-        public bool CanAccessInventory() => true;
-        public bool CanAccessBilling() => true;
+        public bool CanAccessInventory()    => true;
+        public bool CanAccessBilling()      => true;
     }
 
-    /// <summary>
-    /// Estrategia concreta de permisos para el rol de Odontólogo.
-    /// </summary>
-    public class DoctorPermissionStrategy : IRolePermissionStrategy
+    /// <summary>[LEGACY] Estrategia binaria para Odontólogo.</summary>
+    public class LegacyDoctorPermissionStrategy : IRolePermissionStrategy
     {
-        public bool CanAccessPatients() => true;
+        public bool CanAccessPatients()     => true;
         public bool CanAccessAppointments() => true;
-        public bool CanAccessInventory() => false;
-        public bool CanAccessBilling() => false;
+        public bool CanAccessInventory()    => false;
+        public bool CanAccessBilling()      => false;
     }
 
-    /// <summary>
-    /// Estrategia concreta de permisos para el rol de Recepcionista.
-    /// </summary>
-    public class ReceptionistPermissionStrategy : IRolePermissionStrategy
+    /// <summary>[LEGACY] Estrategia binaria para Recepcionista.</summary>
+    public class LegacyReceptionistPermissionStrategy : IRolePermissionStrategy
     {
-        public bool CanAccessPatients() => true;
+        public bool CanAccessPatients()     => true;
         public bool CanAccessAppointments() => true;
-        public bool CanAccessInventory() => false;
-        public bool CanAccessBilling() => true;
+        public bool CanAccessInventory()    => false;
+        public bool CanAccessBilling()      => true;
     }
-    
-    /// <summary>
-    /// Estrategia concreta de permisos para el rol de Asistente Dental.
-    /// </summary>
-    public class AssistantPermissionStrategy : IRolePermissionStrategy
+
+    /// <summary>[LEGACY] Estrategia binaria para Asistente Dental.</summary>
+    public class LegacyAssistantPermissionStrategy : IRolePermissionStrategy
     {
-        public bool CanAccessPatients() => true;
+        public bool CanAccessPatients()     => true;
         public bool CanAccessAppointments() => true;
-        public bool CanAccessInventory() => false;
-        public bool CanAccessBilling() => false;
+        public bool CanAccessInventory()    => false;
+        public bool CanAccessBilling()      => false;
     }
-    
-    /// <summary>
-    /// Estrategia concreta de permisos para el rol de Almacenero.
-    /// </summary>
-    public class WarehousePermissionStrategy : IRolePermissionStrategy
+
+    /// <summary>[LEGACY] Estrategia binaria para Almacenero.</summary>
+    public class LegacyWarehousePermissionStrategy : IRolePermissionStrategy
     {
-        public bool CanAccessPatients() => false;
+        public bool CanAccessPatients()     => false;
         public bool CanAccessAppointments() => false;
-        public bool CanAccessInventory() => true;
-        public bool CanAccessBilling() => false;
+        public bool CanAccessInventory()    => true;
+        public bool CanAccessBilling()      => false;
     }
 
     /// <summary>
-    /// Contexto que mantiene una referencia a una de las estrategias de permisos (Patrón Strategy).
+    /// [LEGACY] Contexto que mantiene una referencia a una estrategia de permisos binaria.
+    /// Se mantiene por compatibilidad histórica.
     /// </summary>
     public class RolePermissionContext
     {
         private IRolePermissionStrategy _strategy;
 
-        // Constructor que inyecta la estrategia de permisos inicial.
         public RolePermissionContext(IRolePermissionStrategy strategy)
         {
             _strategy = strategy;
         }
 
-        // Permite cambiar dinámicamente la estrategia de permisos en tiempo de ejecución.
         public void SetStrategy(IRolePermissionStrategy strategy)
         {
             _strategy = strategy;
         }
 
-        // Evalúa el acceso al módulo especificado utilizando la estrategia actualmente configurada.
         public bool CanAccess(string module)
         {
             return module.ToLower() switch
             {
-                "patients" => _strategy.CanAccessPatients(),
+                "patients"     => _strategy.CanAccessPatients(),
                 "appointments" => _strategy.CanAccessAppointments(),
-                "inventory" => _strategy.CanAccessInventory(),
-                "billing" => _strategy.CanAccessBilling(),
-                _ => false
+                "inventory"    => _strategy.CanAccessInventory(),
+                "billing"      => _strategy.CanAccessBilling(),
+                _              => false
             };
         }
     }

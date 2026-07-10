@@ -120,10 +120,10 @@ window.Modules.Inventory = {
                         { label: 'Ubicación', field: 'ubicacion' },
                         {
                             label: 'Acciones', field: 'id', render: id => canEdit ? `
-                                    <button class="btn--icon-sm" style="color:var(--color-primary);" onclick="window.Modules.Inventory.showAddStockModal(${id})" title="Añadir Stock"><span class="material-symbols-outlined">add_circle</span></button>
-                                    <button class="btn--icon-sm" style="color:var(--color-tertiary);" onclick="window.Modules.Inventory.showRemoveStockModal(${id})" title="Descontar Stock"><span class="material-symbols-outlined">remove_circle</span></button>
-                                    <button class="btn--icon-sm" style="color:var(--color-on-surface-variant);" onclick="window.Modules.Inventory.showEditItemModal(${id})" title="Editar"><span class="material-symbols-outlined">edit</span></button>
-                                    <button class="btn--icon-sm" style="color:var(--color-error);" onclick="window.Modules.Inventory.deleteItem(${id})" title="Eliminar"><span class="material-symbols-outlined">delete</span></button>
+                                    <button class="btn--icon-sm" style="color:var(--color-primary);" onclick="window.Modules.Inventory.showAddStockModal('${id}')" title="Añadir Stock"><span class="material-symbols-outlined">add_circle</span></button>
+                                    <button class="btn--icon-sm" style="color:var(--color-tertiary);" onclick="window.Modules.Inventory.showRemoveStockModal('${id}')" title="Descontar Stock"><span class="material-symbols-outlined">remove_circle</span></button>
+                                    <button class="btn--icon-sm" style="color:var(--color-on-surface-variant);" onclick="window.Modules.Inventory.showEditItemModal('${id}')" title="Editar"><span class="material-symbols-outlined">edit</span></button>
+                                    <button class="btn--icon-sm" style="color:var(--color-error);" onclick="window.Modules.Inventory.deleteItem('${id}')" title="Eliminar"><span class="material-symbols-outlined">delete</span></button>
                                 ` : `
                                     <button class="btn--icon-sm" style="color:var(--color-primary);" onclick="Toast.success('Solicitud enviada')" title="Solicitar"><span class="material-symbols-outlined">pan_tool</span></button>
                                 `}

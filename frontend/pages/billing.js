@@ -63,19 +63,19 @@ window.Modules.Billing = {
                     id: 'billing-table',
                     columns: [
                         { label: 'Nº Boleta', field: 'numero', render: v => `<span class="font-mono font-semibold">${v}</span>` },
-                        { label: 'Paciente', field: 'pacienteNombre' },
+                        { label: 'Paciente', field: 'pacienteNombre', render: (v, item) => item.paciente ? `${item.paciente.nombre} ${item.paciente.apellido}` : (v || 'Sin Asignar') },
                         { label: 'Emisión', field: 'fechaEmision', render: v => this._fmt.date(v) },
                         { label: 'Monto Total', field: 'total', render: v => `<span class="font-semibold">${this._fmt.money(v)}</span>` },
                         { label: 'Método', field: 'metodoPago', render: v => this._fmt.metodos[v] || v },
                         { label: 'Estado', field: 'estado', render: v => this._fmt.status(v) },
                         {
                             label: 'Acciones', field: 'id', render: (id, item) => `
-                            <button class="btn--icon-sm" style="color:var(--color-primary);" onclick="window.Modules.Billing.printInvoice(${id})" title="Imprimir Boleta"><span class="material-symbols-outlined">print</span></button>
+                            <button class="btn--icon-sm" style="color:var(--color-primary);" onclick="window.Modules.Billing.printInvoice('${id}')" title="Imprimir Boleta"><span class="material-symbols-outlined">print</span></button>
                             ${item.estado === 'pendiente' && Permissions.canEdit('facturacion') ? `
-                            <button class="btn--icon-sm" style="color:var(--color-success);" onclick="window.Modules.Billing.markAsPaid(${id})" title="Marcar Pagado"><span class="material-symbols-outlined">check_circle</span></button>
+                            <button class="btn--icon-sm" style="color:var(--color-success);" onclick="window.Modules.Billing.markAsPaid('${id}')" title="Marcar Pagado"><span class="material-symbols-outlined">check_circle</span></button>
                             ` : ''}
                             ${item.estado !== 'anulado' && Permissions.canEdit('facturacion') ? `
-                            <button class="btn--icon-sm" style="color:var(--color-error);" onclick="window.Modules.Billing.voidInvoice(${id})" title="Anular Boleta"><span class="material-symbols-outlined">do_not_disturb_on</span></button>
+                            <button class="btn--icon-sm" style="color:var(--color-error);" onclick="window.Modules.Billing.voidInvoice('${id}')" title="Anular Boleta"><span class="material-symbols-outlined">do_not_disturb_on</span></button>
                             ` : ''}
                         `}
                     ],
@@ -114,6 +114,7 @@ window.Modules.Billing = {
                     let factura = await BillingService.create({
                         pacienteId: paciente.id,
                         pacienteNombre: `${paciente.nombre} ${paciente.apellido}`,
+                        detalles: [{ descripcion: data.descripcion, cantidad: 1, precio: precio }],
                         items: [{ descripcion: data.descripcion, cantidad: 1, precio: precio }],
                         descuento: 0,
                         metodoPago: data.metodoPago
@@ -145,7 +146,13 @@ window.Modules.Billing = {
 
     async printInvoice(id) {
         let factura;
-        try { factura = await BillingService.getById(id); } catch (_) { return; }
+        try { 
+            factura = await BillingService.getById(id); 
+        } catch (err) { 
+            console.error("Error cargando factura:", err);
+            Toast.error("Error al cargar detalles de la boleta");
+            return; 
+        }
 
         const contentHtml = `
             <div style="padding:var(--space-md);background:white;color:black;font-family:monospace;border:1px solid var(--color-outline-variant);border-radius:var(--radius-md);max-height:400px;overflow-y:auto;">
@@ -160,14 +167,14 @@ window.Modules.Billing = {
                     <div><b>Estado:</b> <span style="text-transform:uppercase;font-weight:bold;">${factura.estado}</span></div>
                 </div>
                 <div style="margin-bottom:var(--space-sm);font-size:12px;border-bottom:1px dashed black;padding-bottom:var(--space-xs);">
-                    <div><b>Paciente:</b> ${factura.pacienteNombre}</div>
+                    <div><b>Paciente:</b> ${factura.paciente ? `${factura.paciente.nombre} ${factura.paciente.apellido}` : (factura.pacienteNombre || 'Sin Asignar')}</div>
                     <div><b>Pago:</b> ${this._fmt.metodos[factura.metodoPago] || factura.metodoPago}</div>
                 </div>
                 <table style="width:100%;font-size:11px;border-collapse:collapse;margin-bottom:var(--space-sm);">
                     <tr style="border-bottom:1px solid black;font-weight:bold;">
                         <th style="text-align:left;">Desc</th><th style="text-align:center;">Cant</th><th style="text-align:right;">Total</th>
                     </tr>
-                    ${factura.items.map(item => `
+                    ${(factura.detalles || factura.items || []).map(item => `
                     <tr style="border-bottom:1px solid var(--color-outline-variant);">
                         <td>${item.descripcion}</td><td style="text-align:center;">${item.cantidad}</td><td style="text-align:right;">${this._fmt.money(item.precio * item.cantidad)}</td>
                     </tr>`).join('')}

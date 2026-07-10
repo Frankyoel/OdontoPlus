@@ -23,14 +23,15 @@ namespace backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Factura>>> GetInvoices()
         {
-            var facturas = await _unitOfWork.Facturas.GetAllAsync();
+            var facturas = await _unitOfWork.Facturas.GetAllWithIncludesAsync(f => f.Paciente);
             return Ok(facturas);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Factura>> GetInvoice(Guid id)
         {
-            var factura = await _unitOfWork.Facturas.GetByIdAsync(id);
+            var facturas = await _unitOfWork.Facturas.FindWithIncludesAsync(f => f.Id == id, f => f.Detalles, f => f.Paciente);
+            var factura = System.Linq.Enumerable.FirstOrDefault(facturas);
             if (factura == null) return NotFound();
             return Ok(factura);
         }

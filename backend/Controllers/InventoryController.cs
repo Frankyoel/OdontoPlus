@@ -10,7 +10,7 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/inventario")]
-    [Authorize(Roles = "admin, warehouse")] // Según roles en DOCUMENTACION.txt
+    [Authorize(Roles = "admin, warehouse")] 
     public class InventoryController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

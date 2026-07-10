@@ -74,34 +74,86 @@ window.Modules.Appointments = {
             const rol = Auth.getCurrentRole();
             const userId = Auth.getSession().userId;
             if (rol === 'doctor' || rol === 'odontologo') {
-                displayCitas = displayCitas.filter(c => c.odontologoId === userId);
+                displayCitas = displayCitas.filter(c => (c.odontologoId || '').toLowerCase() === (userId || '').toLowerCase());
             }
 
             const wrapper = document.getElementById('appointments-table-wrapper');
             if (wrapper) {
+                if (displayCitas.length === 0) {
+                    wrapper.innerHTML = `<div class="text-center p-xl"><span class="material-symbols-outlined text-muted" style="font-size:48px;">event_busy</span><p class="text-muted mt-md">No hay citas programadas para este periodo.</p></div>`;
+                    return;
+                }
+
                 displayCitas = displayCitas.map(c => {
                     const pac = c.paciente ? `${c.paciente.nombre} ${c.paciente.apellido}` : 'Sin Asignar';
                     const doc = c.odontologo ? c.odontologo.userName.split('@')[0] : 'Sin Asignar';
                     return { ...c, pacienteNombre: pac, odontologoNombre: doc };
                 });
-                // sort by date asc, time asc
                 displayCitas.sort((a, b) => (a.fecha.split('T')[0] + a.horaInicio).localeCompare(b.fecha.split('T')[0] + b.horaInicio));
-                wrapper.innerHTML = TableComponent.render({
-                    id: 'appointments-table',
-                    columns: [
-                        { label: 'Fecha/Hora', field: 'fecha', render: (v, item) => `<div class="font-semibold text-primary">${item.horaInicio.substring(0, 5)} - ${item.horaFin.substring(0, 5)}</div><div class="text-body-sm text-muted">${this._fmt.date(v)}</div>` },
-                        { label: 'Paciente', field: 'pacienteNombre', render: v => `<div class="font-semibold">${v || ''}</div>` },
-                        { label: 'Odontólogo', field: 'odontologoNombre' },
-                        { label: 'Estado', field: 'estado', render: v => this._fmt.status(v) },
-                        { label: 'Consultorio', field: 'consultorio' },
-                        {
-                            label: 'Acciones', field: 'id', render: id => `
-                            ${Permissions.canEdit('agenda') ? `<button class="btn--icon-sm" style="color:var(--color-primary);" onclick="window.Modules.Appointments.showChangeStatusModal(${id})" title="Cambiar Estado"><span class="material-symbols-outlined">edit_calendar</span></button>` : ''}
-                            ${Permissions.canDelete('agenda') ? `<button class="btn--icon-sm" style="color:var(--color-error);" onclick="window.Modules.Appointments.cancelAppointment(${id})" title="Cancelar Cita"><span class="material-symbols-outlined">cancel</span></button>` : ''}
-                        `}
-                    ],
-                    data: displayCitas
+
+                // Agrupar por fecha
+                const grouped = displayCitas.reduce((acc, cita) => {
+                    const dateStr = cita.fecha.split('T')[0];
+                    if (!acc[dateStr]) acc[dateStr] = [];
+                    acc[dateStr].push(cita);
+                    return acc;
+                }, {});
+
+                let html = `<div class="agenda-container" style="display:flex; flex-direction:column; gap:var(--space-2xl);">`;
+                
+                Object.keys(grouped).forEach(dateStr => {
+                    const dateObj = new Date(dateStr + 'T00:00:00');
+                    const dayName = dateObj.toLocaleDateString('es-PE', { weekday: 'long' });
+                    const formattedDate = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: 'long', year: 'numeric' });
+                    
+                    html += `
+                    <div class="agenda-day-group">
+                        <div class="flex items-center gap-sm mb-lg" style="border-bottom: 2px solid var(--color-surface-variant); padding-bottom: 8px;">
+                            <span class="material-symbols-outlined text-primary">calendar_today</span>
+                            <h2 class="text-headline-sm" style="text-transform: capitalize;">${dayName}, ${formattedDate}</h2>
+                        </div>
+                        <div class="grid grid-cols-12 gap-md">
+                    `;
+
+                    grouped[dateStr].forEach(c => {
+                        const isPast = new Date(dateStr + 'T' + c.horaInicio) < new Date();
+                        html += `
+                        <div class="col-span-4 glass-card p-lg" style="border-left: 4px solid var(--color-primary); display:flex; flex-direction:column; transition: transform 0.2s;">
+                            <div class="flex justify-between items-start mb-sm">
+                                <div>
+                                    <h3 class="text-headline-sm font-semibold">${c.pacienteNombre}</h3>
+                                    <div class="text-body-sm text-muted mt-xs flex items-center gap-xs">
+                                        <span class="material-symbols-outlined" style="font-size:16px;">schedule</span>
+                                        <span class="font-mono text-primary font-semibold">${c.horaInicio.substring(0, 5)} - ${c.horaFin.substring(0, 5)}</span>
+                                    </div>
+                                </div>
+                                ${this._fmt.status(c.estado)}
+                            </div>
+                            
+                            <div class="flex flex-col gap-xs mt-sm text-body-sm">
+                                <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size:16px;">dentistry</span> <span>Dr(a). ${c.odontologoNombre}</span></div>
+                                <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size:16px;">meeting_room</span> <span>${c.consultorio}</span></div>
+                                <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size:16px;">medical_services</span> <span style="text-transform: capitalize;">${c.tipo || 'Consulta General'}</span></div>
+                            </div>
+                            
+                            ${c.notas ? `<div class="mt-md p-sm" style="background:var(--color-surface-variant); border-radius:var(--radius-md);"><p class="text-body-sm"><b>Notas:</b> ${c.notas}</p></div>` : ''}
+                            
+                            <div class="mt-auto pt-md flex gap-sm border-t" style="border-color: var(--color-surface-variant); margin-top:16px;">
+                                ${Permissions.canEdit('agenda') ? `<button class="btn btn--secondary btn--sm flex-1" onclick="window.Modules.Appointments.showChangeStatusModal('${c.id}')"><span class="material-symbols-outlined" style="font-size:18px;">edit</span> Estado</button>` : ''}
+                                ${Permissions.canDelete('agenda') ? `<button class="btn btn--outline btn--sm flex-1 text-error" style="border-color:var(--color-error-container);" onclick="window.Modules.Appointments.cancelAppointment('${c.id}')"><span class="material-symbols-outlined" style="font-size:18px;">close</span> Cancelar</button>` : ''}
+                            </div>
+                        </div>`;
+                    });
+
+                    html += `</div></div>`; // End of day group
                 });
+                
+                html += `</div>`;
+                wrapper.innerHTML = html;
+                wrapper.style.background = 'transparent'; // Remove white background for grid
+                wrapper.style.border = 'none';
+                wrapper.style.boxShadow = 'none';
+                wrapper.style.padding = '0';
             }
         } catch (_) { }
     },

@@ -10,7 +10,7 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/recetas")]
-    [Authorize(Roles = "admin, doctor")]
+    [Authorize(Roles = "admin, doctor, receptionist, assistant")]
     public class PrescriptionsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -41,6 +41,7 @@ namespace backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, doctor")]
         public async Task<ActionResult<RecetaMedica>> CreatePrescription([FromBody] RecetaMedica receta)
         {
             await _unitOfWork.RecetasMedicas.AddAsync(receta);
@@ -49,6 +50,7 @@ namespace backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin, doctor")]
         public async Task<IActionResult> UpdatePrescription(Guid id, [FromBody] RecetaMedica receta)
         {
             if (id != receta.Id) return BadRequest();

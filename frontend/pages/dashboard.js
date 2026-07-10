@@ -39,7 +39,13 @@ window.Modules.Dashboard = {
 
             let contentHtml = '';
             if (tipo === 'completo') contentHtml = this.renderAdmin(stats, citas);
-            else if (tipo === 'clinico') contentHtml = this.renderClinico(stats, citas);
+            else if (tipo === 'clinico') {
+                const userId = Auth.getSession()?.userId;
+                if (userId) {
+                    citas = citas.filter(c => (c.odontologoId || '').toLowerCase() === userId.toLowerCase());
+                }
+                contentHtml = this.renderClinico(stats, citas);
+            }
             else if (tipo === 'inventario') contentHtml = this.renderInventario(stats);
             else contentHtml = this.renderRecepcion(stats, citas);
 
@@ -100,18 +106,18 @@ window.Modules.Dashboard = {
                     <p class="text-label-md text-muted mb-xs">Alertas Inventario</p>
                     <h3 class="text-headline-md ${(s.itemsCriticos || 0) > 0 ? 'text-error' : ''}">${s.itemsCriticos || 0}</h3>
                 </div></div>
-                <div class="col-span-8"><div class="glass-card p-lg h-full">
+                <div class="col-span-12"><div class="glass-card p-lg">
                     <h3 class="text-headline-sm mb-lg">Flujo de Ingresos</h3>
                     <div id="ingresos-chart" style="width:100%;"></div>
                 </div></div>
-                <div class="col-span-4"><div class="glass-card p-lg h-full flex-col">
+                <div class="col-span-12"><div class="glass-card p-lg flex-col">
                     <div class="flex justify-between items-center mb-lg">
                         <h3 class="text-headline-sm">Próximas Citas</h3>
                         <button class="btn--icon-sm" style="background:var(--color-primary);color:white;" onclick="Router.navigate('#/agenda')">
                             <span class="material-symbols-outlined">add</span>
                         </button>
                     </div>
-                    <div class="timeline flex-1">${this._renderTimeline(citas)}</div>
+                    <div class="flex-1" style="overflow: hidden;">${this._renderTimeline(citas)}</div>
                     <button class="btn btn--secondary btn--full mt-md" onclick="Router.navigate('#/agenda')">Ver Agenda Completa</button>
                 </div></div>
             </div>`;
@@ -120,17 +126,17 @@ window.Modules.Dashboard = {
     renderClinico(s, citas) {
         return `
             <div class="grid grid-cols-12 gap-lg">
-                <div class="col-span-8">
+                <div class="col-span-12">
                     <div class="page-header mb-lg">
                         <h2 class="text-headline-lg">Mis Citas de Hoy</h2>
                         <p class="text-body-md text-muted">Tienes ${s.citasProgramadasHoy || 0} citas programadas.</p>
                     </div>
-                    <div class="glass-card p-lg"><div class="timeline">${this._renderTimeline(citas, true)}</div></div>
+                    <div class="glass-card p-lg"><div style="overflow: hidden;">${this._renderTimeline(citas, true)}</div></div>
                 </div>
-                <div class="col-span-4 flex-col gap-lg">
+                <div class="col-span-12">
                     <div class="glass-card p-lg">
                         <h3 class="text-headline-sm mb-md">Acciones Rápidas</h3>
-                        <div class="grid grid-cols-2 gap-sm">
+                        <div class="grid grid-cols-4 gap-sm">
                             <button class="kpi-card" style="min-height:100px;" onclick="Router.navigate('#/pacientes')">
                                 <div class="kpi-card__icon kpi-card__icon--primary mb-xs" style="margin:0 auto;"><span class="material-symbols-outlined">person_add</span></div>
                                 <div class="text-label-md text-center">Nuevo Paciente</div>
@@ -163,9 +169,9 @@ window.Modules.Dashboard = {
                     <p class="text-label-md text-muted mb-xs">Cobros Pendientes</p>
                     <h3 class="text-headline-md">${s.facturasPendientes || 0}</h3>
                 </div></div>
-                <div class="col-span-8"><div class="glass-card p-lg">
+                <div class="col-span-12"><div class="glass-card p-lg">
                     <h3 class="text-headline-sm mb-md">Agenda del Día</h3>
-                    <div class="timeline">${this._renderTimeline(citas)}</div>
+                    <div style="overflow: hidden;">${this._renderTimeline(citas)}</div>
                 </div></div>
             </div>`;
     },
@@ -194,27 +200,49 @@ window.Modules.Dashboard = {
     _renderTimeline(citas, detailed = false) {
         if (!citas || citas.length === 0)
             return `<p class="text-body-sm text-muted">No hay citas para hoy.</p>`;
+        
+        const statusColors = {
+            'programada': 'primary', 'confirmada': 'secondary', 'en_curso': 'tertiary',
+            'completada': 'success', 'cancelada': 'error', 'no_asistio': 'outline'
+        };
+        const statusLabels = {
+            'programada': 'Programada', 'confirmada': 'Confirmada', 'en_curso': 'En Curso',
+            'completada': 'Completada', 'cancelada': 'Cancelada', 'no_asistio': 'No Asistió'
+        };
         const tipos = this._fmt.tipoCita;
-        return citas
-            .sort((a, b) => (a.horaInicio || '').localeCompare(b.horaInicio || ''))
-            .map((cita, i) => {
-                const isNext = cita.estado === 'programada' && i === 0;
-                return `
-                <div class="timeline-item">
-                    <div class="${isNext ? 'timeline-item__dot timeline-item__dot--active' : 'timeline-item__dot'}"></div>
-                    <div style="position:absolute;left:-72px;top:4px;font:var(--font-label-md);color:var(--color-${isNext ? 'primary' : 'on-surface-variant'});width:40px;text-align:right;">${cita.horaInicio || ''}</div>
-                    <div class="glass-card ${isNext ? '' : 'glass-card--flat'} p-md ml-sm">
-                        <div class="flex justify-between items-start mb-xs">
-                            <h4 class="text-headline-sm">${cita.pacienteNombre || cita.paciente?.nombre || 'Paciente'}</h4>
-                            <span class="chip chip--${isNext ? 'primary' : 'outline'}">${tipos[cita.tipo] || cita.tipo || ''}</span>
+
+        return `
+        <div class="horizontal-scroll-container" style="display: flex; gap: var(--space-md); overflow-x: auto; padding: 4px; padding-bottom: var(--space-md); width: 100%;">
+            ${citas
+                .sort((a, b) => (a.horaInicio || '').localeCompare(b.horaInicio || ''))
+                .map((cita) => {
+                    const pac = cita.paciente ? `${cita.paciente.nombre} ${cita.paciente.apellido}` : (cita.pacienteNombre || 'Sin Asignar');
+                    const doc = cita.odontologo ? (cita.odontologo.nombreCompleto || cita.odontologo.userName.split('@')[0]) : 'Sin Asignar';
+                    const statusClass = statusColors[cita.estado] || 'outline';
+                    const statusLabel = statusLabels[cita.estado] || cita.estado;
+
+                    return `
+                    <div class="glass-card p-md" style="min-width: 290px; max-width: 320px; flex-shrink: 0; border-left: 4px solid var(--color-primary); display: flex; flex-direction: column; gap: var(--space-xs); box-shadow: var(--shadow-sm); background: white;">
+                        <div class="flex justify-between items-start" style="gap: 8px;">
+                            <div>
+                                <h4 class="text-headline-sm font-semibold truncate" style="max-width: 160px; margin: 0;">${pac}</h4>
+                                <div class="text-body-sm text-muted mt-xs flex items-center gap-xs">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>
+                                    <span class="font-mono text-primary font-semibold">${(cita.horaInicio || '').substring(0, 5)} - ${(cita.horaFin || '').substring(0, 5)}</span>
+                                </div>
+                            </div>
+                            <span class="chip chip--${statusClass}" style="font-size: 10px; padding: 2px 8px; white-space: nowrap;">${statusLabel}</span>
                         </div>
-                        <div class="flex items-center gap-xs text-body-sm text-muted">
-                            <span class="material-symbols-outlined" style="font-size:16px;">dentistry</span>
-                            <span>${cita.odontologoNombre || cita.odontologo?.nombre || ''}</span>
+                        
+                        <div class="flex flex-col gap-xs mt-xs text-body-sm" style="border-top: 1px solid var(--color-surface-variant); padding-top: var(--space-xs);">
+                            <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size: 16px;">dentistry</span> <span class="truncate">Dr(a). ${doc}</span></div>
+                            <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size: 16px;">meeting_room</span> <span>${cita.consultorio || 'Consultorio 1'}</span></div>
+                            <div class="flex items-center gap-sm text-muted"><span class="material-symbols-outlined" style="font-size: 16px;">medical_services</span> <span style="text-transform: capitalize;">${tipos[cita.tipo] || cita.tipo || 'Consulta'}</span></div>
                         </div>
-                        ${detailed && cita.notas ? `<div class="mt-sm p-sm" style="background:var(--color-surface-container-lowest);border-radius:var(--radius-sm);font-size:13px;color:var(--color-on-surface-variant);"><b>Notas:</b> ${cita.notas}</div>` : ''}
-                    </div>
-                </div>`;
-            }).join('');
+                        
+                        ${cita.notas ? `<div class="mt-xs p-xs" style="background: var(--color-surface-variant); border-radius: var(--radius-sm); font-size: 11px;"><p class="truncate" style="margin: 0;" title="${cita.notas}"><b>Notas:</b> ${cita.notas}</p></div>` : ''}
+                    </div>`;
+                }).join('')}
+        </div>`;
     }
 };

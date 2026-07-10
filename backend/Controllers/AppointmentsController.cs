@@ -21,8 +21,14 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cita>>> GetAppointments()
+        public async Task<ActionResult<IEnumerable<Cita>>> GetAppointments([FromQuery] DateTime? fecha)
         {
+            if (fecha.HasValue)
+            {
+                var targetDate = fecha.Value.Date;
+                var filtered = await _unitOfWork.Citas.FindWithIncludesAsync(c => c.Fecha.Date == targetDate, c => c.Paciente, c => c.Odontologo);
+                return Ok(filtered);
+            }
             var citas = await _unitOfWork.Citas.GetAllWithIncludesAsync(c => c.Paciente, c => c.Odontologo);
             return Ok(citas);
         }
@@ -48,6 +54,10 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Cita>> CreateAppointment([FromBody] Cita cita)
         {
+            if (string.IsNullOrEmpty(cita.Codigo))
+            {
+                cita.Codigo = "CIT-" + DateTime.Now.ToString("yyMMdd") + "-" + new Random().Next(100, 999);
+            }
             await _unitOfWork.Citas.AddAsync(cita);
             await _unitOfWork.CompleteAsync();
             return CreatedAtAction(nameof(GetAppointment), new { id = cita.Id }, cita);
@@ -63,6 +73,18 @@ namespace backend.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}/estado")]
+        public async Task<IActionResult> UpdateEstado(Guid id, [FromBody] UpdateEstadoDto dto)
+        {
+            var appointment = await _unitOfWork.Citas.GetByIdAsync(id);
+            if (appointment == null) return NotFound();
+
+            appointment.Estado = dto.Estado;
+            _unitOfWork.Citas.Update(appointment);
+            await _unitOfWork.CompleteAsync();
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin, receptionist")] // Restringimos borrado
         public async Task<IActionResult> DeleteAppointment(Guid id)
@@ -74,5 +96,10 @@ namespace backend.Controllers
             await _unitOfWork.CompleteAsync();
             return NoContent();
         }
+    }
+
+    public class UpdateEstadoDto
+    {
+        public string Estado { get; set; } = string.Empty;
     }
 }

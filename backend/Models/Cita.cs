@@ -9,7 +9,6 @@ namespace backend.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
         [StringLength(20)]
         public string Codigo { get; set; } = string.Empty;
 
